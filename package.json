@@ -1,0 +1,17 @@
+{
+  "name": "csvnorm",
+  "version": "0.1.0",
+  "main": "index.js",
+  "bin": {
+    "csvnorm": "cli.js"
+  },
+  "dependencies": {
+    "csv-parse": "^1.2.0",
+    "csv-stringify": "^1.0.4",
+    "iconv-lite": "^0.4.15",
+    "jschardet": "^1.4.2",
+    "numeral": "^2.0.6"
+  },
+  "author": "Adrian Sieber <mail@adriansieber.com>",
+  "license": "ISC"
+}
