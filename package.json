@@ -5,12 +5,14 @@
   "bin": {
     "csvnorm": "cli.js"
   },
+  "scripts": {
+    "test": "node tests/main.js"
+  },
   "dependencies": {
     "csv-parse": "^1.2.0",
     "csv-stringify": "^1.0.4",
     "iconv-lite": "^0.4.15",
-    "jschardet": "^1.4.2",
-    "numeral": "^2.0.6"
+    "jschardet": "^1.4.2"
   },
   "author": "Adrian Sieber <mail@adriansieber.com>",
   "license": "ISC"
