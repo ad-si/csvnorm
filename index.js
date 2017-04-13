@@ -51,9 +51,6 @@ module.exports = (options = {}) => {
   function formatDate (value) {
     if (typeof value !== 'string') return null
 
-    const yyyymmdd = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/
-    if (yyyymmdd.test(value)) return null
-
     const mmddyyyy = /^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/
     if (mmddyyyy.test(value)) {
       return value.replace(mmddyyyy, '$3-$1-$2')
@@ -98,19 +95,23 @@ module.exports = (options = {}) => {
 
   function formatCurrency (value) {
     value = value.trim()
-    const currencies = /\$|USD|€|EUR/
-    const containsACurrency = /^[0-9+-., ]*[$€][0-9+-., ]*$/.test(value)
+    const currencies = /EUR|€|HUF|SEK|\$|USD/
+    const containsACurrency =
+      new RegExp(`^[0-9+-., ]*(${currencies.source})[0-9+-., ]*$`)
+      .test(value)
     if (!containsACurrency) return value
 
     const match = value.match(currencies)
     if (match) {
       const currency = match[0]
-      const formattedNumber = formatNumber(
-        value
-          .replace(currency, '')
-          .trim()
-      )
-      return `${formattedNumber} ${currency}`
+      const trimmedValue = value
+        .replace(currency, '')
+        .trim()
+
+
+      const formattedNumber = formatNumber(trimmedValue)
+
+      return `${formattedNumber || trimmedValue} ${currency}`
     }
   }
 
