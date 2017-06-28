@@ -1,6 +1,7 @@
 {
   "name": "csvnorm",
   "version": "0.3.0",
+  "description": "Command line tool to normalize CSV and *SV files.",
   "main": "index.js",
   "bin": {
     "csvnorm": "cli.js"
@@ -16,5 +17,20 @@
     "tempfile": "^2.0.0"
   },
   "author": "Adrian Sieber <mail@adriansieber.com>",
-  "license": "ISC"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adius/csvnorm.git"
+  },
+  "license": "ISC",
+  "directories": {
+    "test": "tests"
+  },
+  "keywords": [
+    "csv",
+    "normalize"
+  ],
+  "bugs": {
+    "url": "https://github.com/adius/csvnorm/issues"
+  },
+  "homepage": "https://github.com/adius/csvnorm#readme"
 }
