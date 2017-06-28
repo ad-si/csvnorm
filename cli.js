@@ -2,14 +2,37 @@
 
 const path = require('path')
 const csvnorm = require('.')
-const csvFilePath = process.argv[2]
+const {stdin, stdout, argv} = process
 
-if (csvFilePath) {
-  csvnorm({filePath: path.resolve(csvFilePath)})
+function logMetaInfos () {
+  console.info(
+    '=== Following meta infos won\'t be printed in non tty environments ===',
+    '\n'
+  )
+  console.info('The input was interpreted in following way:', '\n')
 }
-else {
+
+function main (args) {
+  const csvFilePath = args[0]
+
+  if (csvFilePath) {
+    if (stdout.isTTY) logMetaInfos()
+
+    csvnorm({filePath: path.resolve(csvFilePath)})
+    return
+  }
+
+  if (stdin.isTTY) {
+    console.info('Usage: csvnorm $input_file > $output_path')
+    return
+  }
+
+  if (stdout.isTTY) logMetaInfos()
+
   csvnorm({
-    readableStream: process.stdin,
-    writableStream: process.stdout,
+    readableStream: stdin,
+    writableStream: stdout,
   })
 }
+
+main(argv.slice(2))
