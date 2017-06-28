@@ -11,6 +11,7 @@ Steps:
   - Number columns to `1456.25`
   - Currency columns to `1539.16 $`
 
+
 ## Installation
 
 ```sh
@@ -27,3 +28,12 @@ yarn global add csvnorm
 ```sh
 csvnorm data.csv
 ```
+
+```sh
+cat data.csv | csvnorm
+```
+
+
+## TODO
+
+- [ ] Print debugging info in TTY mode
