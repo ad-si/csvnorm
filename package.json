@@ -6,7 +6,7 @@
     "csvnorm": "cli.js"
   },
   "scripts": {
-    "test": "node tests/main.js"
+    "test": "find ./tests -iname '*.js' -exec node {} \\;"
   },
   "dependencies": {
     "csv-parse": "^1.2.0",
