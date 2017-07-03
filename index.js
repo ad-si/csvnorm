@@ -1,4 +1,6 @@
 const fs = require('fs')
+const path = require('path')
+const assert = require('assert')
 const stream = require('stream')
 
 const csvParse = require('csv-parse')
@@ -85,10 +87,11 @@ function formatCurrency (value) {
 
 module.exports = (options = {}) => {
   const {
+    filePath,
+    inPlace,
     readableStream,
-    writableStream,
   } = options
-  const { filePath } = options
+  let {writableStream} = options
   const config = {}
 
   function printCsv ({configGenerator, inputFilePath}) {
@@ -184,9 +187,19 @@ module.exports = (options = {}) => {
 
 
   if (filePath) {
+    assert(path.isAbsolute(filePath))
+
     fs
       .createReadStream(filePath)
       .pipe(configGenerator)
+
+    if (inPlace) {
+      const temporaryFilePath = tempfile('.csv')
+      writableStream = fs.createWriteStream(temporaryFilePath)
+      writableStream.on('finish', () => {
+        fs.rename(temporaryFilePath, filePath, console.error)
+      })
+    }
 
     configGenerator.on('finish', () => {
       printCsv({

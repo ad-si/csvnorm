@@ -14,7 +14,8 @@
     "csv-stringify": "^1.0.4",
     "iconv-lite": "^0.4.15",
     "jschardet": "^1.4.2",
-    "tempfile": "^2.0.0"
+    "tempfile": "^2.0.0",
+    "yargs": "^8.0.2"
   },
   "author": "Adrian Sieber <mail@adriansieber.com>",
   "repository": {

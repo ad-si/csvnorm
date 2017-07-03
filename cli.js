@@ -1,6 +1,8 @@
 #! /usr/bin/env node
 
 const path = require('path')
+
+const yargs = require('yargs')
 const csvnorm = require('.')
 const {stdin, stdout, argv} = process
 
@@ -13,26 +15,54 @@ function logMetaInfos () {
 }
 
 function main (args) {
-  const csvFilePath = args[0]
+  const options = yargs
+    .usage(
+      [
+        'Usage:',
+        '  csvnorm [Options] INFILE [> OUTFILE]',
+        '  csvnorm [Options] < INFILE [> OUTFILE]',
+      ].join('\n')
+    )
+    .options({
+      'in-place': {
+        describe: 'Normalize CSV file in place',
+        type: 'boolean',
+        default: false,
+      },
+    })
+    .example('csvnorm input.csv > normalized.csv')
+    .example('cat input.csv | csvnorm > normalized.csv')
+    .version()
+    .help()
+    .parse(args)
 
-  if (csvFilePath) {
+  if (options._.length === 0) {
+    if (options.inPlace) {
+      console.error('Error: --in-place has no effect with input from stdin')
+    }
+    if (stdin.isTTY) {
+      yargs.showHelp()
+      return
+    }
+
     if (stdout.isTTY) logMetaInfos()
 
-    csvnorm({filePath: path.resolve(csvFilePath)})
+    csvnorm({
+      readableStream: stdin,
+      writableStream: stdout,
+    })
+  }
+  else {
+    const csvFilePath = options._[0]
+
+    if (stdout.isTTY) logMetaInfos()
+
+    csvnorm({
+      filePath: path.resolve(csvFilePath),
+      inPlace: options.inPlace,
+    })
     return
   }
-
-  if (stdin.isTTY) {
-    console.info('Usage: csvnorm $input_file > $output_path')
-    return
-  }
-
-  if (stdout.isTTY) logMetaInfos()
-
-  csvnorm({
-    readableStream: stdin,
-    writableStream: stdout,
-  })
 }
 
 main(argv.slice(2))
