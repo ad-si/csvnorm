@@ -3,7 +3,7 @@
 const path = require('path')
 
 const yargs = require('yargs')
-const csvnorm = require('.')
+const csvnorm = require('./source')
 const {stdin, stdout, argv} = process
 
 function logMetaInfos () {

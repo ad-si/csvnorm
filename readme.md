@@ -1,6 +1,6 @@
 # Csvnorm
 
-Command line tool to normalize CSV and *SV files.
+Command line tool to normalize CSV and \*SV files.
 
 Steps:
 
@@ -12,7 +12,9 @@ Steps:
   - Currency columns to `1539.16 $`
 
 
-## Installation
+## CLI Version
+
+### Installation
 
 ```sh
 npm install --global csvnorm
@@ -23,7 +25,7 @@ yarn global add csvnorm
 ```
 
 
-## Usage
+### Usage
 
 ```sh
 csvnorm data.csv
@@ -34,6 +36,46 @@ cat data.csv | csvnorm
 ```
 
 
-## TODO
+### TODO
 
 - [ ] Print debugging info in TTY mode
+
+
+
+## Node Module
+
+### Installation
+
+```sh
+npm install --save csvnorm
+```
+
+```sh
+yarn add csvnorm
+```
+
+
+### Usage
+
+With files:
+
+```js
+const csvnorm = require('csvnorm')
+
+csvnorm({
+  filePath: csvFilePath,
+  inPlace: true,
+})
+```
+
+
+With streams:
+
+```js
+const csvnorm = require('csvnorm')
+
+csvnorm({
+  readableStream: process.stdin,
+  writableStream: process.stdout,
+})
+```
