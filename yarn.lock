@@ -38,8 +38,8 @@ cross-spawn@^4.0.0:
     which "^1.2.9"
 
 csv-parse@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/csv-parse/-/csv-parse-1.2.0.tgz#047b73868ab9a85746e885f637f9ed0fb645a425"
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/csv-parse/-/csv-parse-1.2.4.tgz#cbf676e355226625888c6432400b83f07e75cc2e"
 
 csv-stringify@^1.0.4:
   version "1.0.4"
@@ -95,8 +95,8 @@ hosted-git-info@^2.1.4:
   resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.5.0.tgz#6d60e34b3abbc8313062c3b798ef8d901a07af3c"
 
 iconv-lite@^0.4.15:
-  version "0.4.18"
-  resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.18.tgz#23d8656b16aae6742ac29732ea8f0336a4789cf2"
+  version "0.4.19"
+  resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.19.tgz#f7468f60135f5e5dad3399c0a81be9a1603a082b"
 
 invert-kv@^1.0.0:
   version "1.0.0"
@@ -131,8 +131,8 @@ isexe@^2.0.0:
   resolved "https://registry.yarnpkg.com/isexe/-/isexe-2.0.0.tgz#e8fbf374dc556ff8947a10dcb0572d633f2cfa10"
 
 jschardet@^1.4.2:
-  version "1.4.2"
-  resolved "https://registry.yarnpkg.com/jschardet/-/jschardet-1.4.2.tgz#2aa107f142af4121d145659d44f50830961e699a"
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/jschardet/-/jschardet-1.5.1.tgz#c519f629f86b3a5bedba58a88d311309eec097f9"
 
 lcid@^1.0.0:
   version "1.0.0"
@@ -308,6 +308,10 @@ spdx-expression-parse@~1.0.0:
 spdx-license-ids@^1.0.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/spdx-license-ids/-/spdx-license-ids-1.2.2.tgz#c9df7a3424594ade6bd11900d596696dc06bac57"
+
+streamtester@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/streamtester/-/streamtester-0.2.0.tgz#0d0732e6e951a0e99dbc883876a3a92252859cc8"
 
 string-width@^1.0.1:
   version "1.0.2"

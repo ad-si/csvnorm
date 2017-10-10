@@ -2,12 +2,12 @@
   "name": "csvnorm",
   "version": "0.4.1",
   "description": "Command line tool to normalize CSV and *SV files.",
-  "main": "index.js",
+  "main": "source/index.js",
   "bin": {
     "csvnorm": "cli.js"
   },
   "scripts": {
-    "test": "find ./tests -iname '*.js' -exec node {} \\;"
+    "test": "node tests/require.js && node tests/main.js && node tests/input-stream.js"
   },
   "dependencies": {
     "csv-parse": "^1.2.0",
@@ -16,6 +16,9 @@
     "jschardet": "^1.4.2",
     "tempfile": "^2.0.0",
     "yargs": "^8.0.2"
+  },
+  "devDependencies": {
+    "streamtester": "^0.2.0"
   },
   "author": "Adrian Sieber <mail@adriansieber.com>",
   "repository": {

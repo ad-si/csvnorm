@@ -7,7 +7,7 @@ const expectedOutput = fs.readFileSync(
   'utf-8'
 )
 
-process.stdout.write('Format banking CSV file from stdin')
+process.stdout.write('Format banking CSV from stdin via CLI')
 
 exec(
   'cat tests/banking/input-latin1.csv | ./cli.js',
