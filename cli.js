@@ -61,7 +61,6 @@ function main (args) {
       filePath: path.resolve(csvFilePath),
       inPlace: options.inPlace,
     })
-    return
   }
 }
 

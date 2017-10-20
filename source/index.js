@@ -112,6 +112,7 @@ module.exports = (options = {}) => {
       printCsv({
         configGenerator,
         inputFilePath: filePath,
+        writableStream,
       })
     })
     return

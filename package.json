@@ -7,11 +7,13 @@
     "csvnorm": "cli.js"
   },
   "scripts": {
-    "test": "node tests/require.js && node tests/main.js && node tests/input-stream.js"
+    "test": "for file in tests/{require,main,input-stream,in-place}.js; do node $file; done"
   },
   "dependencies": {
     "csv-parse": "^1.2.0",
     "csv-stringify": "^1.0.4",
+    "execa": "^0.8.0",
+    "fs-extra": "^4.0.2",
     "iconv-lite": "^0.4.15",
     "jschardet": "^1.4.2",
     "tempfile": "^2.0.0",
