@@ -1,6 +1,6 @@
 {
   "name": "csvnorm",
-  "version": "0.4.3",
+  "version": "0.5.0",
   "description": "Command line tool to normalize CSV and *SV files.",
   "main": "binary/source/index.js",
   "bin": {
