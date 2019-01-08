@@ -5,11 +5,9 @@ const stream = require('stream')
 
 const csvParse = require('csv-parse')
 const csvStringify = require('csv-stringify')
-const jschardet = require('jschardet')
-const iconv = require('iconv-lite')
 const tempfile = require('tempfile')
 const Formatter = require('./Formatter')
-
+const toUtf8 = require('to-utf-8')
 
 function printCsv (options = {}) {
   const {
@@ -29,7 +27,7 @@ function printCsv (options = {}) {
 
   fs
     .createReadStream(inputFilePath)
-    .pipe(iconv.decodeStream(configGenerator.encoding))
+    .pipe(toUtf8())
     .pipe(parser)
     .pipe(formatter)
     .pipe(stringifier)
@@ -55,16 +53,9 @@ module.exports = (options = {}) => {
         '\t': 0,
         '|': 0,
       }
-      this.encoding = null
     }
 
     _write (chunk, chunkEncoding, chunkIsProcessedCb) {
-      if (!this.encoding) {
-        this.encoding = jschardet
-          .detect(chunk)
-          .encoding
-      }
-
       for (
         let charIndex = 0;
         charIndex < chunk.length;

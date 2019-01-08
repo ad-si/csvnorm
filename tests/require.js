@@ -6,10 +6,12 @@ const csvnorm = require('..')
 const StreamTester = require('streamtester')
 const streamTester = new StreamTester({
   test: csvChunk => {
-    const numberOfCommas = csvChunk
+    const match = csvChunk
       .toString()
       .match(/,/g)
-      .length
+    const numberOfCommas = match
+      ? match.length
+      : 0
     assert.equal(numberOfCommas, 6)
   },
 })
