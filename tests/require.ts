@@ -1,11 +1,13 @@
-const fs = require('fs')
-const path = require('path')
-const assert = require('assert')
+import * as assert from 'assert'
+import * as fs from 'fs'
+import * as path from 'path'
 
-const csvnorm = require('..')
-const StreamTester = require('streamtester')
+import * as StreamTester from 'streamtester'
+import csvnorm from '../source/index'
+
+const testsDir = path.resolve(__dirname, '../../tests')
 const streamTester = new StreamTester({
-  test: csvChunk => {
+  test: (csvChunk: string) => {
     const match = csvChunk
       .toString()
       .match(/,/g)
@@ -20,12 +22,11 @@ streamTester.on('finish', () => {
   console.info(' ✔︎')
 })
 
-
 process.stdout.write('Format banking CSV file via JavaScript API')
 
 csvnorm({
   readableStream: fs.createReadStream(
-    path.join(__dirname, 'banking/input-latin1.csv')
+    path.join(testsDir, 'banking/input-latin1.csv'),
   ),
   writableStream: streamTester,
 })

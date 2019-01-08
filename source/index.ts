@@ -1,22 +1,34 @@
-const fs = require('fs')
-const path = require('path')
-const assert = require('assert')
-const stream = require('stream')
+import * as assert from 'assert'
+import * as fs from 'fs'
+import * as path from 'path'
+import * as stream from 'stream'
 
-const csvParse = require('csv-parse')
-const csvStringify = require('csv-stringify')
-const tempfile = require('tempfile')
-const Formatter = require('./Formatter')
-const toUtf8 = require('to-utf-8')
+import * as csvParse from 'csv-parse'
+import * as csvStringify from 'csv-stringify'
+import * as tempfile from 'tempfile'
+import * as toUtf8 from 'to-utf-8'
 
-function printCsv (options = {}) {
+import Formatter from './Formatter'
+
+interface ConfigGeneratorInterface {
+  delimiterHistogram: {[delimiter: string]: number}
+  mostFrequentDelimter: string
+}
+
+interface PrintCsvArgs {
+  configGenerator: ConfigGeneratorInterface,
+  inputFilePath: string,
+  writableStream?: stream,
+}
+
+function printCsv(options: PrintCsvArgs) {
   const {
     configGenerator,
     inputFilePath,
     writableStream,
   } = options
 
-  const formatter = new Formatter()
+  const formatter = new Formatter({})
   const parser = csvParse({
     delimiter: configGenerator.mostFrequentDelimter,
   })
@@ -34,8 +46,14 @@ function printCsv (options = {}) {
     .pipe(writableStream || process.stdout)
 }
 
+interface MainOptions {
+  filePath?: string
+  inPlace?: boolean
+  readableStream?: stream
+  writableStream?: stream
+}
 
-module.exports = (options = {}) => {
+export default (options: MainOptions) => {
   const {
     filePath,
     inPlace,
@@ -43,19 +61,22 @@ module.exports = (options = {}) => {
   } = options
   let {writableStream} = options
 
+  class ConfigGenerator extends stream.Writable implements ConfigGeneratorInterface {
+    public delimiterHistogram: {[delimiter: string]: number}
+    public mostFrequentDelimter: string
 
-  class ConfigGenerator extends stream.Writable {
-    constructor (opts) {
+    constructor(opts: object) {
       super(opts)
       this.delimiterHistogram = {
+        '\t': 0,
         ',': 0,
         ';': 0,
-        '\t': 0,
         '|': 0,
       }
+      this.mostFrequentDelimter = ','
     }
 
-    _write (chunk, chunkEncoding, chunkIsProcessedCb) {
+    public _write(chunk: string, chunkEncoding: string, chunkIsProcessedCb: () => void) {
       for (
         let charIndex = 0;
         charIndex < chunk.length;
@@ -71,18 +92,19 @@ module.exports = (options = {}) => {
       chunkIsProcessedCb()
     }
 
-    _final (done) {
-      this.mostFrequentDelimter = Array
+    public _final(done: () => void) {
+      const pairs: Array<[string, number]> = Array
         .from(Object.entries(this.delimiterHistogram))
         .sort((itemA, itemB) =>
-          itemB[1] - itemA[1]
-        )[0][0] // [first entry of delimiter list][key of entry]
+          itemB[1] - itemA[1],
+        )
+      // [first entry of delimiter list][key of entry]
+      this.mostFrequentDelimter = pairs[0][0]
       done()
     }
   }
 
-  const configGenerator = new ConfigGenerator()
-
+  const configGenerator = new ConfigGenerator({})
 
   if (filePath) {
     assert(path.isAbsolute(filePath))
@@ -92,10 +114,10 @@ module.exports = (options = {}) => {
       .pipe(configGenerator)
 
     if (inPlace) {
-      const temporaryFilePath = tempfile('.csv')
-      writableStream = fs.createWriteStream(temporaryFilePath)
+      const tempFilePath = tempfile('.csv')
+      writableStream = fs.createWriteStream(tempFilePath)
       writableStream.on('finish', () => {
-        fs.rename(temporaryFilePath, filePath, console.error)
+        fs.rename(tempFilePath, filePath, console.error)
       })
     }
 
@@ -113,7 +135,7 @@ module.exports = (options = {}) => {
   const writableTempFile = fs.createWriteStream(temporaryFilePath)
   let firstStreamFinished = false
 
-  function syncStreams () {
+  function syncStreams() {
     if (!firstStreamFinished) {
       firstStreamFinished = true
       return
@@ -127,10 +149,12 @@ module.exports = (options = {}) => {
   }
 
   configGenerator.on('finish', syncStreams)
-  readableStream
-    .pipe(configGenerator)
+  if (readableStream) {
+    readableStream.pipe(configGenerator)
+  }
 
   writableTempFile.on('finish', syncStreams)
-  readableStream
-    .pipe(writableTempFile)
+  if (readableStream) {
+    readableStream.pipe(writableTempFile)
+  }
 }

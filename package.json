@@ -2,14 +2,22 @@
   "name": "csvnorm",
   "version": "0.4.3",
   "description": "Command line tool to normalize CSV and *SV files.",
-  "main": "source/index.js",
+  "main": "binary/source/index.js",
   "bin": {
-    "csvnorm": "cli.js"
+    "csvnorm": "binary/source/cli.js"
   },
   "scripts": {
-    "test": "for file in tests/{require,empty-lines,main,input-stream,in-place}.js; do node $file; done"
+    "lint": "yarn tslint '{source,tests,types}/**/*.ts'",
+    "build": "yarn tsc && chmod 755 binary/source/cli.js",
+    "unit-test": "yarn build && for file in binary/tests/{require,empty-lines,main,input-stream,in-place}.js; do node $file; done",
+    "test": "yarn lint && yarn unit-test"
   },
   "dependencies": {
+    "@types/execa": "^0.9.0",
+    "@types/fs-extra": "^5.0.4",
+    "@types/node": "^10.12.18",
+    "@types/tempfile": "^2.0.0",
+    "@types/yargs": "^12.0.5",
     "csv-parse": "^4.3.0",
     "csv-stringify": "^5.1.2",
     "execa": "^1.0.0",
@@ -19,12 +27,15 @@
     "yargs": "^12.0.5"
   },
   "devDependencies": {
-    "streamtester": "^0.2.0"
+    "streamtester": "^0.2.0",
+    "ts-node": "^7.0.1",
+    "tslint": "^5.12.0",
+    "typescript": "^3.2.2"
   },
   "author": "Adrian Sieber <mail@adriansieber.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/adius/csvnorm.git"
+    "url": "git+https://github.com/ad-si/csvnorm.git"
   },
   "license": "ISC",
   "directories": {
@@ -35,7 +46,7 @@
     "normalize"
   ],
   "bugs": {
-    "url": "https://github.com/adius/csvnorm/issues"
+    "url": "https://github.com/ad-si/csvnorm/issues"
   },
-  "homepage": "https://github.com/adius/csvnorm#readme"
+  "homepage": "https://github.com/ad-si/csvnorm#readme"
 }

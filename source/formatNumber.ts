@@ -1,14 +1,14 @@
-module.exports = value => {
-  if (typeof value !== 'string') return null
+export default (value: string) => {
+  if (typeof value !== 'string') { return null }
 
   const containsANumber = /^[0-9+-.,]+$/.test(value)
-  if (!containsANumber) return null
+  if (!containsANumber) { return null }
 
   const containsASeparator = /[.,]/.test(value)
-  if (!containsASeparator) return Number(value)
+  if (!containsASeparator) { return Number(value) }
 
   const containsOnlyThousands = /^[0-9]{1,3}(,[0-9]{3})$/.test(value)
-  if (containsOnlyThousands) return Number(value.replace(/,/g, ''))
+  if (containsOnlyThousands) { return Number(value.replace(/,/g, '')) }
 
   const separatorChars = value
     .replace(/[^,.]/g, '')
@@ -21,10 +21,10 @@ module.exports = value => {
     return Number(
       value
         .replace('.', '')
-        .replace(',', '.')
+        .replace(',', '.'),
     )
   }
 
   const commaAsDecimalMark = /^[0-9+-]+,[0-9]{1,2}$/.test(value)
-  if (commaAsDecimalMark) return Number(value.replace(/,(.+?)/, '.$1'))
+  if (commaAsDecimalMark) { return Number(value.replace(/,(.+?)/, '.$1')) }
 }

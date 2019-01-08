@@ -1,9 +1,8 @@
-module.exports = value => {
-  if (typeof value !== 'string') return null
+export default (value: string) => {
+  if (typeof value !== 'string') { return null }
 
   const mmddyyyy = /^([01][0-9])\/([0-3][0-9])\/([0-9]{4})$/
   if (mmddyyyy.test(value)) {
-    console.error()
     return value.replace(mmddyyyy, '$3-$1-$2')
   }
 

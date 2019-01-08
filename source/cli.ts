@@ -1,37 +1,52 @@
 #! /usr/bin/env node
 
-const path = require('path')
+import * as path from 'path'
 
-const yargs = require('yargs')
-const csvnorm = require('./source')
+import * as yargs from 'yargs'
+
+import csvnorm from './index'
+
 const {stdin, stdout, argv} = process
 
-function logMetaInfos () {
+function logMetaInfos() {
   console.info(
     '=== Following meta infos won\'t be printed in non tty environments ===',
-    '\n'
+    '\n',
   )
   console.info('The input was interpreted in following way:', '\n')
 }
 
-function main (args) {
-  const options = yargs
+interface CommandLineOptions {
+  [x: string]: unknown
+  'in-place': boolean
+  _: string[]
+  $0: string
+}
+
+function main(args: string[]) {
+  const options: CommandLineOptions = yargs
     .usage(
       [
         'Usage:',
         '  csvnorm [Options] INFILE [> OUTFILE]',
         '  csvnorm [Options] < INFILE [> OUTFILE]',
-      ].join('\n')
+      ].join('\n'),
     )
     .options({
       'in-place': {
+        default: false,
         describe: 'Normalize CSV file in place',
         type: 'boolean',
-        default: false,
       },
     })
-    .example('csvnorm input.csv > normalized.csv')
-    .example('cat input.csv | csvnorm > normalized.csv')
+    .example(
+      'csvnorm input.csv > normalized.csv',
+      'Normalize a CSV file',
+    )
+    .example(
+      'cat input.csv | csvnorm > normalized.csv',
+      'Pipe and normalize a CSV file',
+    )
     .version()
     .help()
     .parse(args)
@@ -45,21 +60,20 @@ function main (args) {
       return
     }
 
-    if (stdout.isTTY) logMetaInfos()
+    if (stdout.isTTY) { logMetaInfos() }
 
     csvnorm({
       readableStream: stdin,
       writableStream: stdout,
     })
-  }
-  else {
+  } else {
     const csvFilePath = options._[0]
 
-    if (stdout.isTTY) logMetaInfos()
+    if (stdout.isTTY) { logMetaInfos() }
 
     csvnorm({
       filePath: path.resolve(csvFilePath),
-      inPlace: options.inPlace,
+      inPlace: options['in-place'],
     })
   }
 }
