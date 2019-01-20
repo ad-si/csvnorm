@@ -1,10 +1,22 @@
 {
   "compilerOptions": {
-    "target": "es2017",
-    "module": "commonjs",
+    "alwaysStrict": true,
     "declaration": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "commonjs",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "outDir": "./binary",
-    "strict": true
+    "strict": true,
+    "strictBindCallApply": true,
+    "strictFunctionTypes": true,
+    "strictPropertyInitialization": true,
+    "strictNullChecks" : true,
+    "target": "es2017"
   },
   "include": ["source", "tests", "types"],
   "exclude": ["node_modules"]
