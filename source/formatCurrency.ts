@@ -20,5 +20,7 @@ export default (value: string) => {
     const formattedNumber = formatNumber(trimmedValue)
 
     return `${formattedNumber || trimmedValue} ${currency}`
+  } else {
+    return value
   }
 }

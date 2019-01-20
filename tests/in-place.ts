@@ -27,6 +27,8 @@ async function main() {
 
   assert.equal(tempContent, expectedOutput)
 
+  await fse.remove(tempPathAbsolute)
+
   console.info(' ✔︎')
 }
 

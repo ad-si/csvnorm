@@ -1,8 +1,8 @@
-export default (value: string) => {
-  if (typeof value !== 'string') { return null }
+export default function(value: string): number | undefined {
+  if (typeof value !== 'string') { return undefined }
 
   const containsANumber = /^[0-9+-.,]+$/.test(value)
-  if (!containsANumber) { return null }
+  if (!containsANumber) { return undefined }
 
   const containsASeparator = /[.,]/.test(value)
   if (!containsASeparator) { return Number(value) }
@@ -27,4 +27,6 @@ export default (value: string) => {
 
   const commaAsDecimalMark = /^[0-9+-]+,[0-9]{1,2}$/.test(value)
   if (commaAsDecimalMark) { return Number(value.replace(/,(.+?)/, '.$1')) }
+
+  return undefined
 }

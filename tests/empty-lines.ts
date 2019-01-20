@@ -1,5 +1,3 @@
-import * as assert from 'assert'
-import {exec} from 'child_process'
 import * as fs from 'fs'
 import * as path from 'path'
 

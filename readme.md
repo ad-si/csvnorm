@@ -27,19 +27,22 @@ yarn global add csvnorm
 
 ### Usage
 
-```sh
-csvnorm data.csv
+```txt
+Usage:
+  csvnorm [Options] INFILE [> OUTFILE]
+  csvnorm [Options] < INFILE [> OUTFILE]
+
+Options:
+  --encoding    Overwrite detected input encoding                       [string]
+  --in-place    Normalize CSV file in place           [boolean] [default: false]
+  --skip-start  Skip lines at the start of the input       [number] [default: 0]
+  --version     Show version number                                    [boolean]
+  --help        Show help                                              [boolean]
+
+Examples:
+  csvnorm input.csv > normalized.csv        Normalize a CSV file
+  cat input.csv | csvnorm > normalized.csv  Pipe and normalize a CSV file
 ```
-
-```sh
-cat data.csv | csvnorm
-```
-
-
-### TODO
-
-- [ ] Print debugging info in TTY mode
-
 
 
 ## Node Module
@@ -79,3 +82,11 @@ csvnorm({
   writableStream: process.stdout,
 })
 ```
+
+
+### TODO
+
+- [ ] Print debugging info in TTY mode
+- [ ] Improve encoding detection
+      (e.g. fork and update https://github.com/finnp/to-utf-8)
+- [ ] Implement `skipLinesEnd`

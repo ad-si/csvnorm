@@ -7,9 +7,10 @@
     "csvnorm": "binary/source/cli.js"
   },
   "scripts": {
+    "clean": "rm -rf binary",
     "lint": "yarn tslint '{source,tests,types}/**/*.ts'",
     "build": "yarn tsc && chmod 755 binary/source/cli.js",
-    "unit-test": "yarn build && for file in binary/tests/{require,empty-lines,main,input-stream,in-place}.js; do node $file; done",
+    "unit-test": "yarn build && for file in binary/tests/*.js; do node $file; done",
     "test": "yarn lint && yarn unit-test"
   },
   "dependencies": {

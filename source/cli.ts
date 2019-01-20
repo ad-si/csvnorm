@@ -18,7 +18,10 @@ function logMetaInfos() {
 
 interface CommandLineOptions {
   [x: string]: unknown
+  encoding?: string
   'in-place': boolean
+  // 'skip-end': number
+  'skip-start': number
   _: string[]
   $0: string
 }
@@ -33,11 +36,25 @@ function main(args: string[]) {
       ].join('\n'),
     )
     .options({
+      'encoding': {
+        describe: 'Overwrite detected input encoding',
+        type: 'string',
+      },
       'in-place': {
         default: false,
         describe: 'Normalize CSV file in place',
         type: 'boolean',
       },
+      'skip-start': {
+        default: 0,
+        describe: 'Skip lines at the start of the input',
+        type: 'number',
+      },
+      // 'skip-end': {
+      //   default: 0,
+      //   describe: 'Skip lines at the end of the input',
+      //   type: 'number',
+      // },
     })
     .example(
       'csvnorm input.csv > normalized.csv',
@@ -63,7 +80,10 @@ function main(args: string[]) {
     if (stdout.isTTY) { logMetaInfos() }
 
     csvnorm({
+      encoding: options.encoding,
       readableStream: stdin,
+      // skipLinesEnd: options['skip-end'],
+      skipLinesStart: options['skip-start'],
       writableStream: stdout,
     })
   } else {
@@ -72,8 +92,11 @@ function main(args: string[]) {
     if (stdout.isTTY) { logMetaInfos() }
 
     csvnorm({
+      encoding: options.encoding,
       filePath: path.resolve(csvFilePath),
       inPlace: options['in-place'],
+      // skipLinesEnd: options['skip-end'],
+      skipLinesStart: options['skip-start'],
     })
   }
 }

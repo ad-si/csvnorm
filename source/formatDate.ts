@@ -1,5 +1,5 @@
-export default (value: string) => {
-  if (typeof value !== 'string') { return null }
+export default (value: string): string | undefined => {
+  if (typeof value !== 'string') { return undefined }
 
   const mmddyyyy = /^([01][0-9])\/([0-3][0-9])\/([0-9]{4})$/
   if (mmddyyyy.test(value)) {
@@ -15,4 +15,6 @@ export default (value: string) => {
   if (ddmmyy.test(value)) {
     return value.replace(ddmmyy, '20$3-$2-$1')
   }
+
+  return undefined
 }

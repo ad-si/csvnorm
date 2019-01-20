@@ -14,7 +14,7 @@ export default class Formatter extends stream.Transform {
     super(opts)
   }
 
-  public _transform(row: string[], chunkEncoding: string, chunkIsProcessedCb: () => void) {
+  public _transform(row: string[], _1: string, chunkIsProcessedCb: () => void) {
     const formattedRow = row
       .map((cell) => {
         const date = formatDate(cell)

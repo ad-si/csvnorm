@@ -16,14 +16,30 @@ interface ConfigGeneratorInterface {
 }
 
 interface PrintCsvArgs {
-  configGenerator: ConfigGeneratorInterface,
-  inputFilePath: string,
-  writableStream?: stream,
+  configGenerator: ConfigGeneratorInterface
+  encoding?: string
+  inputFilePath: string
+  // skipLinesEnd: number
+  skipLinesStart: number
+  writableStream?: stream
+}
+
+interface MainOptions {
+  encoding?: string
+  filePath?: string
+  inPlace?: boolean
+  readableStream?: stream
+  // skipLinesEnd?: number
+  skipLinesStart?: number
+  writableStream?: stream
 }
 
 function printCsv(options: PrintCsvArgs) {
   const {
     configGenerator,
+    encoding,
+    skipLinesStart = 0,
+    // skipLinesEnd = 0,
     inputFilePath,
     writableStream,
   } = options
@@ -31,6 +47,9 @@ function printCsv(options: PrintCsvArgs) {
   const formatter = new Formatter({})
   const parser = csvParse({
     delimiter: configGenerator.mostFrequentDelimter,
+    from_line: skipLinesStart + 1,
+    // TODO:
+    // to_line: numberOfLines - skipLinesEnd,
   })
   parser.on('error', console.error)
 
@@ -39,70 +58,62 @@ function printCsv(options: PrintCsvArgs) {
 
   fs
     .createReadStream(inputFilePath)
-    .pipe(toUtf8())
+    .pipe(toUtf8({encoding}))
     .pipe(parser)
     .pipe(formatter)
     .pipe(stringifier)
     .pipe(writableStream || process.stdout)
 }
 
-interface MainOptions {
-  filePath?: string
-  inPlace?: boolean
-  readableStream?: stream
-  writableStream?: stream
+class ConfigGenerator extends stream.Writable
+  implements ConfigGeneratorInterface {
+
+  public delimiterHistogram: {[delimiter: string]: number}
+  public mostFrequentDelimter: string
+
+  constructor(opts: object) {
+    super(opts)
+    this.delimiterHistogram = {
+      '\t': 0,
+      ',': 0,
+      ';': 0,
+      '|': 0,
+    }
+    this.mostFrequentDelimter = ','
+  }
+
+  public _write(chunk: Buffer, _1: string, chunkIsProcessedCb: () => void) {
+    for (const char of chunk.toString()) {
+      if (this.delimiterHistogram.hasOwnProperty(char)) {
+        this.delimiterHistogram[char]++
+      }
+    }
+
+    chunkIsProcessedCb()
+  }
+
+  public _final(done: () => void) {
+    const pairs: Array<[string, number]> = Array
+      .from(Object.entries(this.delimiterHistogram))
+      .sort((itemA, itemB) =>
+        itemB[1] - itemA[1],
+      )
+    // [first entry of delimiter list][key of entry]
+    this.mostFrequentDelimter = pairs[0][0]
+    done()
+  }
 }
 
 export default (options: MainOptions) => {
   const {
+    encoding,
     filePath,
     inPlace,
     readableStream,
+    // skipLinesEnd = 0,
+    skipLinesStart = 0,
   } = options
   let {writableStream} = options
-
-  class ConfigGenerator extends stream.Writable implements ConfigGeneratorInterface {
-    public delimiterHistogram: {[delimiter: string]: number}
-    public mostFrequentDelimter: string
-
-    constructor(opts: object) {
-      super(opts)
-      this.delimiterHistogram = {
-        '\t': 0,
-        ',': 0,
-        ';': 0,
-        '|': 0,
-      }
-      this.mostFrequentDelimter = ','
-    }
-
-    public _write(chunk: string, chunkEncoding: string, chunkIsProcessedCb: () => void) {
-      for (
-        let charIndex = 0;
-        charIndex < chunk.length;
-        charIndex++
-      ) {
-        const char = chunk.toString()[charIndex]
-
-        if (this.delimiterHistogram.hasOwnProperty(char)) {
-          this.delimiterHistogram[char]++
-        }
-      }
-
-      chunkIsProcessedCb()
-    }
-
-    public _final(done: () => void) {
-      const pairs: Array<[string, number]> = Array
-        .from(Object.entries(this.delimiterHistogram))
-        .sort((itemA, itemB) =>
-          itemB[1] - itemA[1],
-        )
-      // [first entry of delimiter list][key of entry]
-      this.mostFrequentDelimter = pairs[0][0]
-      done()
-    }
-  }
 
   const configGenerator = new ConfigGenerator({})
 
@@ -124,7 +135,10 @@ export default (options: MainOptions) => {
     configGenerator.on('finish', () => {
       printCsv({
         configGenerator,
+        encoding,
         inputFilePath: filePath,
+        // skipLinesEnd,
+        skipLinesStart,
         writableStream,
       })
     })
@@ -143,7 +157,10 @@ export default (options: MainOptions) => {
 
     printCsv({
       configGenerator,
+      encoding,
       inputFilePath: temporaryFilePath,
+      // skipLinesEnd,
+      skipLinesStart,
       writableStream,
     })
   }
