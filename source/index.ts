@@ -17,6 +17,7 @@ interface ConfigGeneratorInterface {
 
 interface PrintCsvArgs {
   configGenerator: ConfigGeneratorInterface
+  dateFormat?: string
   encoding?: string
   inputFilePath: string
   // skipLinesEnd: number
@@ -25,6 +26,7 @@ interface PrintCsvArgs {
 }
 
 interface MainOptions {
+  dateFormat?: string
   encoding?: string
   filePath?: string
   inPlace?: boolean
@@ -37,6 +39,7 @@ interface MainOptions {
 function printCsv(options: PrintCsvArgs) {
   const {
     configGenerator,
+    dateFormat,
     encoding,
     skipLinesStart = 0,
     // skipLinesEnd = 0,
@@ -44,7 +47,7 @@ function printCsv(options: PrintCsvArgs) {
     writableStream,
   } = options
 
-  const formatter = new Formatter({})
+  const formatter = new Formatter({dateFormat})
   const parser = csvParse({
     delimiter: configGenerator.mostFrequentDelimter,
     from_line: skipLinesStart + 1,
@@ -106,6 +109,7 @@ class ConfigGenerator extends stream.Writable
 
 export default (options: MainOptions) => {
   const {
+    dateFormat,
     encoding,
     filePath,
     inPlace,
@@ -135,6 +139,7 @@ export default (options: MainOptions) => {
     configGenerator.on('finish', () => {
       printCsv({
         configGenerator,
+        dateFormat,
         encoding,
         inputFilePath: filePath,
         // skipLinesEnd,
@@ -157,6 +162,7 @@ export default (options: MainOptions) => {
 
     printCsv({
       configGenerator,
+      dateFormat,
       encoding,
       inputFilePath: temporaryFilePath,
       // skipLinesEnd,

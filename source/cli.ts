@@ -18,6 +18,7 @@ function logMetaInfos() {
 
 interface CommandLineOptions {
   [x: string]: unknown
+  'date-format'?: string
   encoding?: string
   'in-place': boolean
   // 'skip-end': number
@@ -36,6 +37,10 @@ function main(args: string[]) {
       ].join('\n'),
     )
     .options({
+      'date-format': {
+        describe: 'Overwrite detected date format',
+        type: 'string',
+      },
       'encoding': {
         describe: 'Overwrite detected input encoding',
         type: 'string',
@@ -64,12 +69,16 @@ function main(args: string[]) {
       'cat input.csv | csvnorm > normalized.csv',
       'Pipe and normalize a CSV file',
     )
+    .example(
+      'csvnorm --date-format "dd/mm/yyyy" i.csv',
+      'Normalize a CSV file with an unusual date format',
+    )
     .version()
     .help()
     .parse(args)
 
   if (options._.length === 0) {
-    if (options.inPlace) {
+    if (options['in-place']) {
       console.error('Error: --in-place has no effect with input from stdin')
     }
     if (stdin.isTTY) {
@@ -80,6 +89,7 @@ function main(args: string[]) {
     if (stdout.isTTY) { logMetaInfos() }
 
     csvnorm({
+      dateFormat: options['date-format'],
       encoding: options.encoding,
       readableStream: stdin,
       // skipLinesEnd: options['skip-end'],
@@ -92,6 +102,7 @@ function main(args: string[]) {
     if (stdout.isTTY) { logMetaInfos() }
 
     csvnorm({
+      dateFormat: options['date-format'],
       encoding: options.encoding,
       filePath: path.resolve(csvFilePath),
       inPlace: options['in-place'],

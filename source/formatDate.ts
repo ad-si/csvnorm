@@ -1,19 +1,60 @@
-export default (value: string): string | undefined => {
+const formatToPattern = new Map([
+  ['mm/dd/yyyy', {
+    regex: /^([01][0-9])\/([0-3][0-9])\/([0-9]{4})$/,
+    replacement: '$3-$1-$2',
+  }],
+  ['mm/dd/yy', {
+    regex: /^([01][0-9])\/([0-3][0-9])\/([0-9]{2})$/,
+    replacement: '20$3-$1-$2',
+  }],
+  ['dd.mm.yyyy', {
+    regex: /^([0-3][0-9])\.([01][0-9])\.([0-9]{4})$/,
+    replacement: '$3-$2-$1',
+  }],
+  ['dd.mm.yy', {
+    regex: /^([0-3][0-9])\.([01][0-9])\.([0-9]{2})$/,
+    replacement: '20$3-$2-$1',
+  }],
+  ['dd/mm/yyyy', {
+    regex: /^([0-3][0-9])\/([01][0-9])\/([0-9]{4})$/,
+    replacement: '$3-$2-$1',
+  }],
+  ['dd/mm/yy', {
+    regex: /^([0-3][0-9])\/([01][0-9])\/([0-9]{2})$/,
+    replacement: '20$3-$2-$1',
+  }],
+])
+
+export default (value: string, dateFormat?: string): string | undefined => {
   if (typeof value !== 'string') { return undefined }
 
-  const mmddyyyy = /^([01][0-9])\/([0-3][0-9])\/([0-9]{4})$/
-  if (mmddyyyy.test(value)) {
-    return value.replace(mmddyyyy, '$3-$1-$2')
+  const emptyPattern = {regex: / /, replacement: ''}
+  let pattern
+
+  if (dateFormat) {
+    if (!formatToPattern.has(dateFormat)) {
+      throw new Error('The specified date format is not yet supported')
+    }
+    pattern = formatToPattern.get(dateFormat) || emptyPattern
+
+    if (pattern.regex.test(value)) {
+      return value.replace(pattern.regex, pattern.replacement)
+    }
   }
 
-  const ddmmyyyy = /^([0-3][0-9])\.([01][0-9])\.([0-9]{4})$/
-  if (ddmmyyyy.test(value)) {
-    return value.replace(ddmmyyyy, '$3-$2-$1')
+  pattern = formatToPattern.get('mm/dd/yyyy') || emptyPattern
+  if (pattern.regex.test(value)) {
+    return value.replace(pattern.regex, pattern.replacement)
   }
 
-  const ddmmyy = /^([0-3][0-9])\.([01][0-9])\.([0-9]{2})$/
-  if (ddmmyy.test(value)) {
-    return value.replace(ddmmyy, '20$3-$2-$1')
+  pattern = formatToPattern.get('dd.mm.yyyy') || emptyPattern
+  if (pattern.regex.test(value)) {
+    return value.replace(pattern.regex, pattern.replacement)
+  }
+
+  pattern = formatToPattern.get('dd.mm.yy') || emptyPattern
+  if (pattern.regex.test(value)) {
+    return value.replace(pattern.regex, pattern.replacement)
   }
 
   return undefined

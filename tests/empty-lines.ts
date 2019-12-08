@@ -11,7 +11,7 @@ streamTester.on('finish', () => {
   console.info(' ✔︎')
 })
 
-process.stdout.write('Format banking CSV file with emtpy lines')
+process.stdout.write('Format banking CSV file with empty lines')
 
 csvnorm({
   readableStream: fs.createReadStream(
