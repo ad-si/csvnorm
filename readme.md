@@ -33,15 +33,18 @@ Usage:
   csvnorm [Options] < INFILE [> OUTFILE]
 
 Options:
-  --encoding    Overwrite detected input encoding                       [string]
-  --in-place    Normalize CSV file in place           [boolean] [default: false]
-  --skip-start  Skip lines at the start of the input       [number] [default: 0]
-  --version     Show version number                                    [boolean]
-  --help        Show help                                              [boolean]
+  --date-format  Overwrite detected date format                         [string]
+  --encoding     Overwrite detected input encoding                      [string]
+  --in-place     Normalize CSV file in place          [boolean] [default: false]
+  --skip-start   Skip lines at the start of the input      [number] [default: 0]
+  --version      Show version number                                   [boolean]
+  --help         Show help                                             [boolean]
 
 Examples:
   csvnorm input.csv > normalized.csv        Normalize a CSV file
   cat input.csv | csvnorm > normalized.csv  Pipe and normalize a CSV file
+  csvnorm --date-format "dd/mm/yyyy" i.csv  Normalize a CSV file with an unusual
+                                            date format
 ```
 
 
