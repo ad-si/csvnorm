@@ -1,12 +1,12 @@
-import * as assert from 'assert'
-import * as fs from 'fs'
-import * as path from 'path'
-import * as stream from 'stream'
+import assert from 'assert'
+import fs from 'fs'
+import path from 'path'
+import stream from 'stream'
 
-import * as csvParse from 'csv-parse'
-import * as csvStringify from 'csv-stringify'
-import * as tempfile from 'tempfile'
-import * as toUtf8 from 'to-utf-8'
+import csvParse from 'csv-parse'
+import csvStringify from 'csv-stringify'
+import tempfile from 'tempfile'
+import toUtf8 from 'to-utf-8'
 
 import Formatter from './Formatter'
 

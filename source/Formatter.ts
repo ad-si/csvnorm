@@ -1,4 +1,4 @@
-import * as stream from 'stream'
+import stream from 'stream'
 
 import formatCurrency from './formatCurrency'
 import formatDate from './formatDate'

@@ -1,8 +1,8 @@
-import * as assert from 'assert'
-import * as path from 'path'
+import assert from 'assert'
+import path from 'path'
 
-import * as execa from 'execa'
-import * as fse from 'fs-extra'
+import execa from 'execa'
+import fse from 'fs-extra'
 
 const testsDir = path.resolve(__dirname, '../../tests')
 

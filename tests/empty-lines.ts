@@ -1,7 +1,7 @@
-import * as fs from 'fs'
-import * as path from 'path'
+import fs from 'fs'
+import path from 'path'
 
-import * as StreamTester from 'streamtester'
+import StreamTester from 'streamtester'
 import csvnorm from '../source/index'
 
 const streamTester = new StreamTester()

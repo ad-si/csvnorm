@@ -1,8 +1,8 @@
 #! /usr/bin/env node
 
-import * as path from 'path'
+import path from 'path'
 
-import * as yargs from 'yargs'
+import yargs from 'yargs'
 
 import csvnorm from './index'
 

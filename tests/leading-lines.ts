@@ -1,8 +1,8 @@
-import * as assert from 'assert'
-import * as fs from 'fs'
-import * as path from 'path'
+import assert from 'assert'
+import fs from 'fs'
+import path from 'path'
 
-import * as StreamTester from 'streamtester'
+import StreamTester from 'streamtester'
 import csvnorm from '../source/index'
 
 const testsDir = path.resolve(__dirname, '../../tests')

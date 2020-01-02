@@ -1,7 +1,7 @@
-import * as assert from 'assert'
+import assert from 'assert'
 import {execFile} from 'child_process'
-import * as fs from 'fs'
-import * as path from 'path'
+import fs from 'fs'
+import path from 'path'
 
 const rootDir = path.resolve(__dirname, '../..')
 const testsDir = path.resolve(rootDir, 'tests')
