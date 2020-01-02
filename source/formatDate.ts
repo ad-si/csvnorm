@@ -25,7 +25,11 @@ const formatToPattern = new Map([
   }],
 ])
 
-export default (value: string, dateFormat?: string): string | undefined => {
+export default (
+  value: string,
+  dateFormat?: string,
+  isoDatetime = false,
+): string | undefined => {
   if (typeof value !== 'string') { return undefined }
 
   const emptyPattern = {regex: / /, replacement: ''}
@@ -55,6 +59,28 @@ export default (value: string, dateFormat?: string): string | undefined => {
   pattern = formatToPattern.get('dd.mm.yy') || emptyPattern
   if (pattern.regex.test(value)) {
     return value.replace(pattern.regex, pattern.replacement)
+  }
+
+  if (isoDatetime) {
+    const isoRegex = new RegExp(
+      [
+        /^([0-9]{4})-([01][0-9])-([0-3][0-9])/,
+        /[ t]/,
+        /[0-2][0-9]:[0-5][0-9](:[0-5][0-9])?/,
+        /(.[0-9]{3})?(|z|\+[0-9][0-9]:?[0-9][0-9])$/,
+      ]
+        .map((regex) => regex.source)
+        .join(''),
+      'i',
+    )
+
+    if (isoRegex.test(value)) {
+      const parsedDate = new Date(value)
+
+      if (parsedDate) {
+        return parsedDate.toISOString()
+      }
+    }
   }
 
   return undefined

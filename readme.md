@@ -33,12 +33,14 @@ Usage:
   csvnorm [Options] < INFILE [> OUTFILE]
 
 Options:
-  --date-format  Overwrite detected date format                         [string]
-  --encoding     Overwrite detected input encoding                      [string]
-  --in-place     Normalize CSV file in place          [boolean] [default: false]
-  --skip-start   Skip lines at the start of the input      [number] [default: 0]
-  --version      Show version number                                   [boolean]
-  --help         Show help                                             [boolean]
+  --date-format   Specify an additional prioritized input date format   [string]
+  --encoding      Overwrite detected input encoding                     [string]
+  --in-place      Normalize CSV file in place         [boolean] [default: false]
+  --iso-datetime  Output datetimes with format YYYY-MM-DD[T]HH:mm:ss.SSS[Z]
+                                                      [boolean] [default: false]
+  --skip-start    Skip lines at the start of the input     [number] [default: 0]
+  --version       Show version number                                  [boolean]
+  --help          Show help                                            [boolean]
 
 Examples:
   csvnorm input.csv > normalized.csv        Normalize a CSV file

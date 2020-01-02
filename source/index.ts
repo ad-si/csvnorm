@@ -20,6 +20,7 @@ interface PrintCsvArgs {
   dateFormat?: string
   encoding?: string
   inputFilePath: string
+  isoDatetime: boolean
   // skipLinesEnd: number
   skipLinesStart: number
   writableStream?: stream
@@ -30,6 +31,7 @@ interface MainOptions {
   encoding?: string
   filePath?: string
   inPlace?: boolean
+  isoDatetime?: boolean
   readableStream?: stream
   // skipLinesEnd?: number
   skipLinesStart?: number
@@ -41,13 +43,14 @@ function printCsv(options: PrintCsvArgs) {
     configGenerator,
     dateFormat,
     encoding,
+    isoDatetime,
     skipLinesStart = 0,
     // skipLinesEnd = 0,
     inputFilePath,
     writableStream,
   } = options
 
-  const formatter = new Formatter({dateFormat})
+  const formatter = new Formatter({dateFormat, isoDatetime})
   const parser = csvParse({
     delimiter: configGenerator.mostFrequentDelimter,
     from_line: skipLinesStart + 1,
@@ -56,7 +59,14 @@ function printCsv(options: PrintCsvArgs) {
   })
   parser.on('error', console.error)
 
-  const stringifier = csvStringify()
+  const stringifier = csvStringify({
+    cast: {
+      date: (date: Date) => {
+        console.error(date)
+        return date
+      },
+    },
+  } as any)
   stringifier.on('error', console.error)
 
   fs
@@ -113,6 +123,7 @@ export default (options: MainOptions) => {
     encoding,
     filePath,
     inPlace,
+    isoDatetime = false,
     readableStream,
     // skipLinesEnd = 0,
     skipLinesStart = 0,
@@ -142,6 +153,7 @@ export default (options: MainOptions) => {
         dateFormat,
         encoding,
         inputFilePath: filePath,
+        isoDatetime,
         // skipLinesEnd,
         skipLinesStart,
         writableStream,
@@ -165,6 +177,7 @@ export default (options: MainOptions) => {
       dateFormat,
       encoding,
       inputFilePath: temporaryFilePath,
+      isoDatetime,
       // skipLinesEnd,
       skipLinesStart,
       writableStream,

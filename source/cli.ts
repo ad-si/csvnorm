@@ -19,6 +19,7 @@ function logMetaInfos() {
 interface CommandLineOptions {
   [x: string]: unknown
   'date-format'?: string
+  'iso-datetime': boolean
   encoding?: string
   'in-place': boolean
   // 'skip-end': number
@@ -38,7 +39,7 @@ function main(args: string[]) {
     )
     .options({
       'date-format': {
-        describe: 'Overwrite detected date format',
+        describe: 'Specify an additional prioritized input date format',
         type: 'string',
       },
       'encoding': {
@@ -48,6 +49,11 @@ function main(args: string[]) {
       'in-place': {
         default: false,
         describe: 'Normalize CSV file in place',
+        type: 'boolean',
+      },
+      'iso-datetime': {
+        default: false,
+        describe: 'Output datetimes with format YYYY-MM-DD[T]HH:mm:ss.SSS[Z]',
         type: 'boolean',
       },
       'skip-start': {
@@ -91,6 +97,7 @@ function main(args: string[]) {
     csvnorm({
       dateFormat: options['date-format'],
       encoding: options.encoding,
+      isoDatetime: options['iso-datetime'],
       readableStream: stdin,
       // skipLinesEnd: options['skip-end'],
       skipLinesStart: options['skip-start'],
@@ -106,6 +113,7 @@ function main(args: string[]) {
       encoding: options.encoding,
       filePath: path.resolve(csvFilePath),
       inPlace: options['in-place'],
+      isoDatetime: options['iso-datetime'],
       // skipLinesEnd: options['skip-end'],
       skipLinesStart: options['skip-start'],
     })
