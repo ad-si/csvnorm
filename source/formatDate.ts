@@ -1,4 +1,8 @@
 const formatToPattern = new Map([
+  ['yyyy-mm-dd', {
+    regex: /^[0-9]{4}-[01][0-9]-[0-3][0-9]$/,
+    replacement: '',
+  }],
   ['mm/dd/yyyy', {
     regex: /^([01][0-9])\/([0-3][0-9])\/([0-9]{4})$/,
     replacement: '$3-$1-$2',
@@ -30,8 +34,6 @@ export default (
   dateFormat?: string,
   isoDatetime = false,
 ): string | undefined => {
-  if (typeof value !== 'string') { return undefined }
-
   const emptyPattern = {regex: / /, replacement: ''}
   let pattern
 
@@ -59,6 +61,12 @@ export default (
   pattern = formatToPattern.get('dd.mm.yy') || emptyPattern
   if (pattern.regex.test(value)) {
     return value.replace(pattern.regex, pattern.replacement)
+  }
+
+  // Don't change formatting if it is already formatted as ISO8601
+  pattern = formatToPattern.get('yyyy-mm-dd') || emptyPattern
+  if (pattern.regex.test(value)) {
+    return value
   }
 
   if (isoDatetime) {
