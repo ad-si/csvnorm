@@ -23,6 +23,7 @@ streamTester.on('finish', () => {
     '',
   ].join('\n'))
   assert.equal(buffer.toString(), expected.toString())
+  console.info(' ✔︎')
 })
 
 process.stdout.write('Parse CSV file with preceding lines')

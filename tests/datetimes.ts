@@ -26,6 +26,7 @@ streamTester.on('finish', () => {
     '',
   ].join('\n'))
   assert.equal(buffer.toString(), expected.toString())
+  console.info(' ✔︎')
 })
 
 process.stdout.write('Format all datetimes in ISO8601 format')

@@ -1,14 +1,29 @@
-export default function(value: string): number | undefined {
-  if (typeof value !== 'string') { return undefined }
+export default function(value: string): string | undefined {
 
-  const containsANumber = /^[0-9+-.,]+$/.test(value)
-  if (!containsANumber) { return undefined }
+  const isDigitsAndSeparators = /^[0-9+-.,]+$/.test(value)
+  if (!isDigitsAndSeparators) { return undefined }
+
+  let optionalSign = ''
+  if (value.startsWith('+')) {
+    value = value.slice(1)
+    optionalSign = '+'
+  } else if (value.startsWith('-')) {
+    value = value.slice(1)
+    optionalSign = '-'
+  }
+
+  const hasLeadingZeros = /^0+/.test(value)
+  if (!isDigitsAndSeparators || hasLeadingZeros) { return undefined }
 
   const containsASeparator = /[.,]/.test(value)
-  if (!containsASeparator) { return Number(value) }
+  if (!containsASeparator) {
+    return optionalSign + String(Number(value))
+  }
 
   const containsOnlyThousands = /^[0-9]{1,3}(,[0-9]{3})$/.test(value)
-  if (containsOnlyThousands) { return Number(value.replace(/,/g, '')) }
+  if (containsOnlyThousands) {
+    return optionalSign + String(Number(value.replace(/,/g, '')))
+  }
 
   const separatorChars = value
     .replace(/[^,.]/g, '')
@@ -18,15 +33,17 @@ export default function(value: string): number | undefined {
     separatorChars.shift() === '.' &&
     separatorChars.pop() === ','
   ) {
-    return Number(
+    return optionalSign + String(Number(
       value
         .replace('.', '')
         .replace(',', '.'),
-    )
+    ))
   }
 
   const commaAsDecimalMark = /^[0-9+-]+,[0-9]{1,2}$/.test(value)
-  if (commaAsDecimalMark) { return Number(value.replace(/,(.+?)/, '.$1')) }
+  if (commaAsDecimalMark) {
+    return optionalSign + String(Number(value.replace(/,(.+?)/, '.$1')))
+  }
 
   return undefined
 }

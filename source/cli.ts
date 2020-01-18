@@ -61,10 +61,26 @@ function main(args: string[]) {
         describe: 'Skip lines at the start of the input',
         type: 'number',
       },
+
+      // TODO:
       // 'skip-end': {
       //   default: 0,
       //   describe: 'Skip lines at the end of the input',
       //   type: 'number',
+      // },
+
+      // TODO:
+      // 'keep-leading-zeros': {
+      //   default: true,
+      //   describe: 'Parse numbers with leading zeros as strings',
+      //   type: 'boolean',
+      // },
+
+      // TODO:
+      // 'keep-sign-of-number': {
+      //   default: true,
+      //   describe: 'Keep + and - signs of numbers',
+      //   type: 'boolean',
       // },
     })
     .example(

@@ -6,7 +6,6 @@ import StreamTester from 'streamtester'
 import csvnorm from '../source/index'
 
 const testsDir = path.resolve(__dirname, '../../tests')
-
 let buffer = Buffer.alloc(0)
 const streamTester = new StreamTester({
   test: (chunk: Buffer) => {
@@ -15,23 +14,29 @@ const streamTester = new StreamTester({
 })
 
 streamTester.on('finish', () => {
-  const expected = Buffer.from([
-    'Date,Recipient,Amount',
-    '2014-12-01,John,10 $',
-    '2017-08-13,Anna,7 $',
-    '2018-02-22,Ben,166 $',
-    '',
-  ].join('\n'))
+  const expected = Buffer.from(
+    [
+      'name,number',
+      'john,1234',
+      'lisa,0123',
+      'marc,0012',
+      'carl,+123',
+      'mike,-123',
+      'evan,+012',
+      'jake,-012',
+    ]
+      .map((line) => line + '\n')
+      .join(''),
+  )
   assert.equal(buffer.toString(), expected.toString())
   console.info(' ✔︎')
 })
 
-process.stdout.write('Force data format for parsing CSV')
+process.stdout.write('Parse CSV file with leading zeros')
 
 csvnorm({
-  dateFormat: 'dd/mm/yyyy',
   readableStream: fs.createReadStream(
-    path.join(testsDir, 'banking/unusual-date-format.csv'),
+    path.join(testsDir, 'leading-zeros.csv'),
   ),
   writableStream: streamTester,
 })
