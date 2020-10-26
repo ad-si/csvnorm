@@ -17,12 +17,18 @@ export default function(value: string): string | undefined {
 
   const containsASeparator = /[.,]/.test(value)
   if (!containsASeparator) {
-    return optionalSign + String(Number(value))
+    const num = Number(value)
+    return Number.isNaN(num)
+      ? undefined
+      : optionalSign + String(num)
   }
 
   const containsOnlyThousands = /^[0-9]{1,3}(,[0-9]{3})$/.test(value)
   if (containsOnlyThousands) {
-    return optionalSign + String(Number(value.replace(/,/g, '')))
+    const num = Number(value.replace(/,/g, ''))
+    return Number.isNaN(num)
+      ? undefined
+      : optionalSign + String(num)
   }
 
   const separatorChars = value
@@ -33,16 +39,22 @@ export default function(value: string): string | undefined {
     separatorChars.shift() === '.' &&
     separatorChars.pop() === ','
   ) {
-    return optionalSign + String(Number(
-      value
-        .replace('.', '')
-        .replace(',', '.'),
-    ))
+    const num = Number(
+        value
+          .replace('.', '')
+          .replace(',', '.'),
+      )
+    return Number.isNaN(num)
+      ? undefined
+      : optionalSign + String(num)
   }
 
   const commaAsDecimalMark = /^[0-9+-]+,[0-9]{1,2}$/.test(value)
   if (commaAsDecimalMark) {
-    return optionalSign + String(Number(value.replace(/,(.+?)/, '.$1')))
+    const num = Number(value.replace(/,(.+?)/, '.$1'))
+    return Number.isNaN(num)
+      ? undefined
+      : optionalSign + String(num)
   }
 
   return undefined
