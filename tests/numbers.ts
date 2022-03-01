@@ -18,14 +18,18 @@ const streamTester = new StreamTester({
 streamTester.on("finish", () => {
   const expected = Buffer.from(
     [
-      "name,number",
-      "john,0",
-      "lisa,1",
-      "marc,12",
-      "carl,0.12",
-      "mike,0.12",
-      "bob,1.23",
-      "anna,12.34",
+      "label,number",
+      "int_0,0",
+      "int_1,1",
+      "int_medium,12",
+      "int_millions,12345678",
+      "float_leading_zero,0.12",
+      "float_leading_zero_comma,0.12",
+      "float,1.23",
+      "float_medium,12.34",
+      "float_zero,0",
+      "float_3_decimal_places,1.234",
+      "float_many_decimal_places,135.0075",
     ]
       .map((line) => line + "\n")
       .join(""),

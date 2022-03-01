@@ -81,6 +81,12 @@ function main(args: string[]) {
       //   describe: 'Keep + and - signs of numbers',
       //   type: 'boolean',
       // },
+
+      // TODO:
+      // 'number-format': {
+      //   describe: 'Specify the prioritized number format',
+      //   type: 'boolean',
+      // },
     })
     .example(
       "csvnorm input.csv > normalized.csv",

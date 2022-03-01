@@ -26,7 +26,7 @@ export default function(value: string): string | undefined {
       : optionalSign + String(num)
   }
 
-  const containsOnlyThousands = /^[0-9]{1,3}(,[0-9]{3})$/.test(value)
+  const containsOnlyThousands = /^[0-9]{1,3}(,[0-9]{3}){2,}$/.test(value)
   if (containsOnlyThousands) {
     const num = Number(value.replace(/,/g, ""))
     return Number.isNaN(num)
@@ -52,7 +52,7 @@ export default function(value: string): string | undefined {
       : optionalSign + String(num)
   }
 
-  const commaAsDecimalMark = /^[0-9+-]+,[0-9]{1,2}$/.test(value)
+  const commaAsDecimalMark = /^[0-9+-]+,[0-9]+$/.test(value)
   if (commaAsDecimalMark) {
     const num = Number(value.replace(/,(.+?)/, ".$1"))
     return Number.isNaN(num)

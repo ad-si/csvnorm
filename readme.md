@@ -88,6 +88,13 @@ csvnorm({
 })
 ```
 
+**Warning:**
+Numbers from `1,000` to `999,999` with 3 decimal places
+are parsed as floats (`1.000` to `999.999`).
+Only numbers larger than `1,000,000`
+or numbers with less or more than 3 decimal places
+can be unambiguously parsed as integers (`1000000`).
+
 
 ### TODO
 
