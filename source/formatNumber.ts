@@ -13,7 +13,10 @@ export default function(value: string): string | undefined {
   }
 
   const hasLeadingZeros = /^0+/.test(value)
-  if (!isDigitsAndSeparators || hasLeadingZeros) { return undefined }
+  const isZeroComma = /^0,/.test(value)
+  if (!isDigitsAndSeparators || (hasLeadingZeros && !isZeroComma)) {
+    return undefined
+  }
 
   const containsASeparator = /[.,]/.test(value)
   if (!containsASeparator) {
