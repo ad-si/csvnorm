@@ -3,35 +3,38 @@
   "version": "0.10.0",
   "description": "Command line tool to normalize CSV and *SV files.",
   "main": "binary/source/index.js",
+  "type": "module",
   "bin": {
     "csvnorm": "binary/source/cli.js"
   },
   "scripts": {
     "clean": "rm -rf binary",
-    "lint": "yarn tslint '{source,tests,types}/**/*.ts'",
-    "build": "yarn tsc && chmod 755 binary/source/cli.js",
-    "unit-test": "yarn build && for file in binary/tests/*.js; do node $file; done",
-    "test": "yarn lint && yarn unit-test"
+    "lint": "npx eslint '{source,tests,types}/**/*.ts'",
+    "build": "npx tsc && chmod 755 binary/source/cli.js",
+    "unit-test": "npm run build && for file in binary/tests/*.js; do node $file; done",
+    "test": "npm run lint && npm run unit-test"
   },
   "dependencies": {
     "@types/execa": "^2.0.0",
-    "@types/fs-extra": "^9.0.2",
-    "@types/node": "^14.14.3",
+    "@types/fs-extra": "^9.0.13",
+    "@types/node": "^17.0.21",
     "@types/tempfile": "^3.0.0",
-    "@types/yargs": "^15.0.9",
-    "csv-parse": "^4.12.0",
-    "csv-stringify": "^5.5.1",
-    "execa": "^4.0.3",
-    "fs-extra": "^9.0.1",
-    "tempfile": "^3.0.0",
+    "@types/yargs": "^17.0.8",
+    "csv-parse": "^5.0.4",
+    "csv-stringify": "^6.0.5",
+    "execa": "^6.1.0",
+    "fs-extra": "^10.0.1",
+    "tempy": "^2.0.0",
     "to-utf-8": "^1.3.0",
-    "yargs": "^16.1.0"
+    "yargs": "^17.3.1"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.13.0",
+    "@typescript-eslint/parser": "^5.13.0",
+    "eslint": "^8.10.0",
     "streamtester": "^0.2.0",
-    "ts-node": "^9.0.0",
-    "tslint": "^5.20.1",
-    "typescript": "^4.0.3"
+    "ts-node": "^10.6.0",
+    "typescript": "^4.6.2"
   },
   "author": "Adrian Sieber <mail@adriansieber.com>",
   "repository": {

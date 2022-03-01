@@ -2,8 +2,10 @@ import assert from 'assert'
 import {execFile} from 'child_process'
 import fs from 'fs'
 import path from 'path'
+import { fileURLToPath } from 'url'
 
-const rootDir = path.resolve(__dirname, '../..')
+const currentDir = path.dirname(fileURLToPath(import.meta.url))
+const rootDir = path.resolve(currentDir, '../..')
 const testsDir = path.resolve(rootDir, 'tests')
 const expectedOutput = fs.readFileSync(
   path.join(testsDir, 'banking/expected-output.csv'),

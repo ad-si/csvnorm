@@ -1,10 +1,12 @@
 import assert from 'assert'
 import path from 'path'
+import { fileURLToPath } from 'url'
 
-import execa from 'execa'
+import { execa } from 'execa'
 import fse from 'fs-extra'
 
-const testsDir = path.resolve(__dirname, '../../tests')
+const currentDir = path.dirname(fileURLToPath(import.meta.url))
+const testsDir = path.resolve(currentDir, '../../tests')
 
 async function main() {
   process.stdout.write('Format banking CSV file via CLI in place')

@@ -3,8 +3,9 @@
 import path from 'path'
 
 import yargs from 'yargs'
+import { hideBin } from 'yargs/helpers'
 
-import csvnorm from './index'
+import csvnorm from './index.js'
 
 const {stdin, stdout, argv} = process
 
@@ -17,19 +18,17 @@ function logMetaInfos() {
 }
 
 interface CommandLineOptions {
-  [x: string]: unknown
-  'date-format'?: string
-  'iso-datetime': boolean
-  encoding?: string
-  'in-place': boolean
-  // 'skip-end': number
-  'skip-start': number
-  _: string[]
-  $0: string
+  'date-format'?: string,
+  encoding?: string,
+  'in-place'?: boolean,
+  'iso-datetime'?: boolean,
+  'skip-start'?: number,
+  _: string[],
+  $0: string,
 }
 
 function main(args: string[]) {
-  const options: CommandLineOptions = yargs
+  const options = (yargs(args)
     .usage(
       [
         'Usage:',
@@ -97,7 +96,8 @@ function main(args: string[]) {
     )
     .version()
     .help()
-    .parse(args)
+    .argv) as unknown as CommandLineOptions
+
 
   if (options._.length === 0) {
     if (options['in-place']) {
@@ -119,7 +119,8 @@ function main(args: string[]) {
       skipLinesStart: options['skip-start'],
       writableStream: stdout,
     })
-  } else {
+  }
+  else {
     const csvFilePath = options._[0]
 
     if (stdout.isTTY) { logMetaInfos() }
@@ -136,4 +137,4 @@ function main(args: string[]) {
   }
 }
 
-main(argv.slice(2))
+main(hideBin(argv))

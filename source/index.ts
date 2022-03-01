@@ -3,12 +3,12 @@ import fs from 'fs'
 import path from 'path'
 import stream from 'stream'
 
-import csvParse from 'csv-parse'
-import csvStringify from 'csv-stringify'
-import tempfile from 'tempfile'
+import { parse } from 'csv-parse'
+import { stringify } from 'csv-stringify'
+import tempy from 'tempy'
 import toUtf8 from 'to-utf-8'
 
-import Formatter from './Formatter'
+import Formatter from './Formatter.js'
 
 interface ConfigGeneratorInterface {
   delimiterHistogram: {[delimiter: string]: number}
@@ -51,7 +51,7 @@ function printCsv(options: PrintCsvArgs) {
   } = options
 
   const formatter = new Formatter({dateFormat, isoDatetime})
-  const parser = csvParse({
+  const parser = parse({
     delimiter: configGenerator.mostFrequentDelimter,
     from_line: skipLinesStart + 1,
     // TODO:
@@ -59,14 +59,15 @@ function printCsv(options: PrintCsvArgs) {
   })
   parser.on('error', console.error)
 
-  const stringifier = csvStringify({
+  const stringifier = stringify({
+    // @ts-expect-error  No overload matches this call
     cast: {
       date: (date: Date) => {
         console.error(date)
         return date
       },
     },
-  } as any)
+  })
   stringifier.on('error', console.error)
 
   fs
@@ -97,7 +98,7 @@ class ConfigGenerator extends stream.Writable
 
   public _write(chunk: Buffer, _1: string, chunkIsProcessedCb: () => void) {
     for (const char of chunk.toString()) {
-      if (this.delimiterHistogram.hasOwnProperty(char)) {
+      if (Object.prototype.hasOwnProperty.call(this.delimiterHistogram, char)) {
         this.delimiterHistogram[char]++
       }
     }
@@ -140,7 +141,7 @@ export default (options: MainOptions) => {
       .pipe(configGenerator)
 
     if (inPlace) {
-      const tempFilePath = tempfile('.csv')
+      const tempFilePath = tempy.file({extension: 'csv'})
       writableStream = fs.createWriteStream(tempFilePath)
       writableStream.on('finish', () => {
         fs.rename(tempFilePath, filePath, console.error)
@@ -162,7 +163,7 @@ export default (options: MainOptions) => {
     return
   }
 
-  const temporaryFilePath = tempfile('.csv')
+  const temporaryFilePath = tempy.file({extension: 'csv'})
   const writableTempFile = fs.createWriteStream(temporaryFilePath)
   let firstStreamFinished = false
 

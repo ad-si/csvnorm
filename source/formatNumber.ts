@@ -40,10 +40,10 @@ export default function(value: string): string | undefined {
     separatorChars.pop() === ','
   ) {
     const num = Number(
-        value
-          .replace('.', '')
-          .replace(',', '.'),
-      )
+      value
+        .replace('.', '')
+        .replace(',', '.'),
+    )
     return Number.isNaN(num)
       ? undefined
       : optionalSign + String(num)

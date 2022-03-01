@@ -1,11 +1,13 @@
 import fs from 'fs'
 import path from 'path'
+import { fileURLToPath } from 'url'
 
 import StreamTester from 'streamtester'
-import csvnorm from '../source/index'
+import csvnorm from '../source/index.js'
 
 const streamTester = new StreamTester()
-const testsDir = path.resolve(__dirname, '../../tests')
+const currentDir = path.dirname(fileURLToPath(import.meta.url))
+const testsDir = path.resolve(currentDir, '../../tests')
 
 streamTester.on('finish', () => {
   console.info(' ✔︎')
