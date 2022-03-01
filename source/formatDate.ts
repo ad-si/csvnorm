@@ -1,31 +1,31 @@
 const formatToPattern = new Map([
-  ['yyyy-mm-dd', {
+  ["yyyy-mm-dd", {
     regex: /^[0-9]{4}-[01][0-9]-[0-3][0-9]$/,
-    replacement: '',
+    replacement: "",
   }],
-  ['mm/dd/yyyy', {
+  ["mm/dd/yyyy", {
     regex: /^([01][0-9])\/([0-3][0-9])\/([0-9]{4})$/,
-    replacement: '$3-$1-$2',
+    replacement: "$3-$1-$2",
   }],
-  ['mm/dd/yy', {
+  ["mm/dd/yy", {
     regex: /^([01][0-9])\/([0-3][0-9])\/([0-9]{2})$/,
-    replacement: '20$3-$1-$2',
+    replacement: "20$3-$1-$2",
   }],
-  ['dd.mm.yyyy', {
+  ["dd.mm.yyyy", {
     regex: /^([0-3][0-9])\.([01][0-9])\.([0-9]{4})$/,
-    replacement: '$3-$2-$1',
+    replacement: "$3-$2-$1",
   }],
-  ['dd.mm.yy', {
+  ["dd.mm.yy", {
     regex: /^([0-3][0-9])\.([01][0-9])\.([0-9]{2})$/,
-    replacement: '20$3-$2-$1',
+    replacement: "20$3-$2-$1",
   }],
-  ['dd/mm/yyyy', {
+  ["dd/mm/yyyy", {
     regex: /^([0-3][0-9])\/([01][0-9])\/([0-9]{4})$/,
-    replacement: '$3-$2-$1',
+    replacement: "$3-$2-$1",
   }],
-  ['dd/mm/yy', {
+  ["dd/mm/yy", {
     regex: /^([0-3][0-9])\/([01][0-9])\/([0-9]{2})$/,
-    replacement: '20$3-$2-$1',
+    replacement: "20$3-$2-$1",
   }],
 ])
 
@@ -34,12 +34,12 @@ export default (
   dateFormat?: string,
   isoDatetime = false,
 ): string | undefined => {
-  const emptyPattern = {regex: / /, replacement: ''}
+  const emptyPattern = {regex: / /, replacement: ""}
   let pattern
 
   if (dateFormat) {
     if (!formatToPattern.has(dateFormat)) {
-      throw new Error('The specified date format is not yet supported')
+      throw new Error("The specified date format is not yet supported")
     }
     pattern = formatToPattern.get(dateFormat) || emptyPattern
 
@@ -48,23 +48,23 @@ export default (
     }
   }
 
-  pattern = formatToPattern.get('mm/dd/yyyy') || emptyPattern
+  pattern = formatToPattern.get("mm/dd/yyyy") || emptyPattern
   if (pattern.regex.test(value)) {
     return value.replace(pattern.regex, pattern.replacement)
   }
 
-  pattern = formatToPattern.get('dd.mm.yyyy') || emptyPattern
+  pattern = formatToPattern.get("dd.mm.yyyy") || emptyPattern
   if (pattern.regex.test(value)) {
     return value.replace(pattern.regex, pattern.replacement)
   }
 
-  pattern = formatToPattern.get('dd.mm.yy') || emptyPattern
+  pattern = formatToPattern.get("dd.mm.yy") || emptyPattern
   if (pattern.regex.test(value)) {
     return value.replace(pattern.regex, pattern.replacement)
   }
 
   // Don't change formatting if it is already formatted as ISO8601
-  pattern = formatToPattern.get('yyyy-mm-dd') || emptyPattern
+  pattern = formatToPattern.get("yyyy-mm-dd") || emptyPattern
   if (pattern.regex.test(value)) {
     return value
   }
@@ -78,8 +78,8 @@ export default (
         /(.[0-9]{3})?(|z|\+[0-9][0-9]:?[0-9][0-9])$/,
       ]
         .map((regex) => regex.source)
-        .join(''),
-      'i',
+        .join(""),
+      "i",
     )
 
     if (isoRegex.test(value)) {

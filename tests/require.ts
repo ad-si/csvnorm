@@ -1,13 +1,13 @@
-import assert from 'assert'
-import fs from 'fs'
-import path from 'path'
-import { fileURLToPath } from 'url'
+import assert from "assert"
+import fs from "fs"
+import path from "path"
+import { fileURLToPath } from "url"
 
-import StreamTester from 'streamtester'
-import csvnorm from '../source/index.js'
+import StreamTester from "streamtester"
+import csvnorm from "../source/index.js"
 
 const currentDir = path.dirname(fileURLToPath(import.meta.url))
-const testsDir = path.resolve(currentDir, '../../tests')
+const testsDir = path.resolve(currentDir, "../../tests")
 const streamTester = new StreamTester({
   test: (csvChunk: string) => {
     const match = csvChunk
@@ -20,15 +20,15 @@ const streamTester = new StreamTester({
   },
 })
 
-streamTester.on('finish', () => {
-  console.info(' ✔︎')
+streamTester.on("finish", () => {
+  console.info(" ✔︎")
 })
 
-process.stdout.write('Format banking CSV file via JavaScript API')
+process.stdout.write("Format banking CSV file via JavaScript API")
 
 csvnorm({
   readableStream: fs.createReadStream(
-    path.join(testsDir, 'banking/input-latin1.csv'),
+    path.join(testsDir, "banking/input-latin1.csv"),
   ),
   writableStream: streamTester,
 })

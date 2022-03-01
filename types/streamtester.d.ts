@@ -1,1 +1,1 @@
-declare module 'streamtester'
+declare module "streamtester"

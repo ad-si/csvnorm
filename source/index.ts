@@ -1,14 +1,14 @@
-import assert from 'assert'
-import fs from 'fs'
-import path from 'path'
-import stream from 'stream'
+import assert from "assert"
+import fs from "fs"
+import path from "path"
+import stream from "stream"
 
-import { parse } from 'csv-parse'
-import { stringify } from 'csv-stringify'
-import tempy from 'tempy'
-import toUtf8 from 'to-utf-8'
+import { parse } from "csv-parse"
+import { stringify } from "csv-stringify"
+import tempy from "tempy"
+import toUtf8 from "to-utf-8"
 
-import Formatter from './Formatter.js'
+import Formatter from "./Formatter.js"
 
 interface ConfigGeneratorInterface {
   delimiterHistogram: {[delimiter: string]: number}
@@ -57,7 +57,7 @@ function printCsv(options: PrintCsvArgs) {
     // TODO:
     // to_line: numberOfLines - skipLinesEnd,
   })
-  parser.on('error', console.error)
+  parser.on("error", console.error)
 
   const stringifier = stringify({
     // @ts-expect-error  No overload matches this call
@@ -68,7 +68,7 @@ function printCsv(options: PrintCsvArgs) {
       },
     },
   })
-  stringifier.on('error', console.error)
+  stringifier.on("error", console.error)
 
   fs
     .createReadStream(inputFilePath)
@@ -88,12 +88,12 @@ class ConfigGenerator extends stream.Writable
   constructor(opts: object) {
     super(opts)
     this.delimiterHistogram = {
-      '\t': 0,
-      ',': 0,
-      ';': 0,
-      '|': 0,
+      "\t": 0,
+      ",": 0,
+      ";": 0,
+      "|": 0,
     }
-    this.mostFrequentDelimter = ','
+    this.mostFrequentDelimter = ","
   }
 
   public _write(chunk: Buffer, _1: string, chunkIsProcessedCb: () => void) {
@@ -141,14 +141,14 @@ export default (options: MainOptions) => {
       .pipe(configGenerator)
 
     if (inPlace) {
-      const tempFilePath = tempy.file({extension: 'csv'})
+      const tempFilePath = tempy.file({extension: "csv"})
       writableStream = fs.createWriteStream(tempFilePath)
-      writableStream.on('finish', () => {
+      writableStream.on("finish", () => {
         fs.rename(tempFilePath, filePath, console.error)
       })
     }
 
-    configGenerator.on('finish', () => {
+    configGenerator.on("finish", () => {
       printCsv({
         configGenerator,
         dateFormat,
@@ -163,7 +163,7 @@ export default (options: MainOptions) => {
     return
   }
 
-  const temporaryFilePath = tempy.file({extension: 'csv'})
+  const temporaryFilePath = tempy.file({extension: "csv"})
   const writableTempFile = fs.createWriteStream(temporaryFilePath)
   let firstStreamFinished = false
 
@@ -185,12 +185,12 @@ export default (options: MainOptions) => {
     })
   }
 
-  configGenerator.on('finish', syncStreams)
+  configGenerator.on("finish", syncStreams)
   if (readableStream) {
     readableStream.pipe(configGenerator)
   }
 
-  writableTempFile.on('finish', syncStreams)
+  writableTempFile.on("finish", syncStreams)
   if (readableStream) {
     readableStream.pipe(writableTempFile)
   }

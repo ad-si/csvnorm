@@ -1,4 +1,4 @@
-import formatNumber from './formatNumber.js'
+import formatNumber from "./formatNumber.js"
 
 export default (value: string) => {
   value = value.trim()
@@ -14,7 +14,7 @@ export default (value: string) => {
   if (match) {
     const currency = match[0]
     const trimmedValue = value
-      .replace(currency, '')
+      .replace(currency, "")
       .trim()
 
     const formattedNumber = formatNumber(trimmedValue)

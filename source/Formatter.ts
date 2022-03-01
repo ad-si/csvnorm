@@ -1,8 +1,8 @@
-import stream from 'stream'
+import stream from "stream"
 
-import formatCurrency from './formatCurrency.js'
-import formatDate from './formatDate.js'
-import formatNumber from './formatNumber.js'
+import formatCurrency from "./formatCurrency.js"
+import formatDate from "./formatDate.js"
+import formatNumber from "./formatNumber.js"
 
 interface FormatterOptions {
   objectMode?: boolean

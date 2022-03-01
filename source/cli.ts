@@ -1,28 +1,28 @@
 #! /usr/bin/env node
 
-import path from 'path'
+import path from "path"
 
-import yargs from 'yargs'
-import { hideBin } from 'yargs/helpers'
+import yargs from "yargs"
+import { hideBin } from "yargs/helpers"
 
-import csvnorm from './index.js'
+import csvnorm from "./index.js"
 
 const {stdin, stdout, argv} = process
 
 function logMetaInfos() {
   console.info(
-    '=== Following meta infos won\'t be printed in non tty environments ===',
-    '\n',
+    "=== Following meta infos won't be printed in non tty environments ===",
+    "\n",
   )
-  console.info('The input was interpreted in following way:', '\n')
+  console.info("The input was interpreted in following way:", "\n")
 }
 
 interface CommandLineOptions {
-  'date-format'?: string,
+  "date-format"?: string,
   encoding?: string,
-  'in-place'?: boolean,
-  'iso-datetime'?: boolean,
-  'skip-start'?: number,
+  "in-place"?: boolean,
+  "iso-datetime"?: boolean,
+  "skip-start"?: number,
   _: string[],
   $0: string,
 }
@@ -31,34 +31,34 @@ function main(args: string[]) {
   const options = (yargs(args)
     .usage(
       [
-        'Usage:',
-        '  csvnorm [Options] INFILE [> OUTFILE]',
-        '  csvnorm [Options] < INFILE [> OUTFILE]',
-      ].join('\n'),
+        "Usage:",
+        "  csvnorm [Options] INFILE [> OUTFILE]",
+        "  csvnorm [Options] < INFILE [> OUTFILE]",
+      ].join("\n"),
     )
     .options({
-      'date-format': {
-        describe: 'Specify an additional prioritized input date format',
-        type: 'string',
+      "date-format": {
+        describe: "Specify an additional prioritized input date format",
+        type: "string",
       },
-      'encoding': {
-        describe: 'Overwrite detected input encoding',
-        type: 'string',
+      "encoding": {
+        describe: "Overwrite detected input encoding",
+        type: "string",
       },
-      'in-place': {
+      "in-place": {
         default: false,
-        describe: 'Normalize CSV file in place',
-        type: 'boolean',
+        describe: "Normalize CSV file in place",
+        type: "boolean",
       },
-      'iso-datetime': {
+      "iso-datetime": {
         default: false,
-        describe: 'Output datetimes with format YYYY-MM-DD[T]HH:mm:ss.SSS[Z]',
-        type: 'boolean',
+        describe: "Output datetimes with format YYYY-MM-DD[T]HH:mm:ss.SSS[Z]",
+        type: "boolean",
       },
-      'skip-start': {
+      "skip-start": {
         default: 0,
-        describe: 'Skip lines at the start of the input',
-        type: 'number',
+        describe: "Skip lines at the start of the input",
+        type: "number",
       },
 
       // TODO:
@@ -83,16 +83,16 @@ function main(args: string[]) {
       // },
     })
     .example(
-      'csvnorm input.csv > normalized.csv',
-      'Normalize a CSV file',
+      "csvnorm input.csv > normalized.csv",
+      "Normalize a CSV file",
     )
     .example(
-      'cat input.csv | csvnorm > normalized.csv',
-      'Pipe and normalize a CSV file',
+      "cat input.csv | csvnorm > normalized.csv",
+      "Pipe and normalize a CSV file",
     )
     .example(
-      'csvnorm --date-format "dd/mm/yyyy" i.csv',
-      'Normalize a CSV file with an unusual date format',
+      "csvnorm --date-format \"dd/mm/yyyy\" i.csv",
+      "Normalize a CSV file with an unusual date format",
     )
     .version()
     .help()
@@ -100,8 +100,8 @@ function main(args: string[]) {
 
 
   if (options._.length === 0) {
-    if (options['in-place']) {
-      console.error('Error: --in-place has no effect with input from stdin')
+    if (options["in-place"]) {
+      console.error("Error: --in-place has no effect with input from stdin")
     }
     if (stdin.isTTY) {
       yargs.showHelp()
@@ -111,12 +111,12 @@ function main(args: string[]) {
     if (stdout.isTTY) { logMetaInfos() }
 
     csvnorm({
-      dateFormat: options['date-format'],
+      dateFormat: options["date-format"],
       encoding: options.encoding,
-      isoDatetime: options['iso-datetime'],
+      isoDatetime: options["iso-datetime"],
       readableStream: stdin,
       // skipLinesEnd: options['skip-end'],
-      skipLinesStart: options['skip-start'],
+      skipLinesStart: options["skip-start"],
       writableStream: stdout,
     })
   }
@@ -126,13 +126,13 @@ function main(args: string[]) {
     if (stdout.isTTY) { logMetaInfos() }
 
     csvnorm({
-      dateFormat: options['date-format'],
+      dateFormat: options["date-format"],
       encoding: options.encoding,
       filePath: path.resolve(csvFilePath),
-      inPlace: options['in-place'],
-      isoDatetime: options['iso-datetime'],
+      inPlace: options["in-place"],
+      isoDatetime: options["iso-datetime"],
       // skipLinesEnd: options['skip-end'],
-      skipLinesStart: options['skip-start'],
+      skipLinesStart: options["skip-start"],
     })
   }
 }
