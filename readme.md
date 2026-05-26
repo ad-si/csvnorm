@@ -20,10 +20,6 @@ Steps:
 npm install --global csvnorm
 ```
 
-```sh
-yarn global add csvnorm
-```
-
 
 ### Usage
 
@@ -58,9 +54,7 @@ Examples:
 npm install --save csvnorm
 ```
 
-```sh
-yarn add csvnorm
-```
+`csvnorm` is an ES module and requires Node.js 20 or later.
 
 
 ### Usage
@@ -68,7 +62,7 @@ yarn add csvnorm
 With files:
 
 ```js
-const csvnorm = require('csvnorm')
+import csvnorm from "csvnorm"
 
 csvnorm({
   filePath: csvFilePath,
@@ -80,7 +74,7 @@ csvnorm({
 With streams:
 
 ```js
-const csvnorm = require('csvnorm')
+import csvnorm from "csvnorm"
 
 csvnorm({
   readableStream: process.stdin,
