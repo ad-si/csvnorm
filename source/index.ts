@@ -6,9 +6,9 @@ import stream from "stream"
 import { parse } from "csv-parse"
 import { stringify } from "csv-stringify"
 import { temporaryFile } from "tempy"
-import toUtf8 from "to-utf-8"
 
 import Formatter, { ColumnTypeStats } from "./Formatter.js"
+import ToUtf8 from "./toUtf8.js"
 
 interface ConfigGeneratorInterface {
   delimiterHistogram: {[delimiter: string]: number}
@@ -37,7 +37,7 @@ interface PrintCsvArgs {
   isoDatetime: boolean
   skipLinesEnd: number
   skipLinesStart: number
-  writableStream?: stream
+  writableStream?: stream.Writable
   onMeta?: (meta: MetaInfo) => void
   metaFilePath?: string
 }
@@ -48,10 +48,10 @@ interface MainOptions {
   filePath?: string
   inPlace?: boolean
   isoDatetime?: boolean
-  readableStream?: stream
+  readableStream?: stream.Readable
   skipLinesEnd?: number
   skipLinesStart?: number
-  writableStream?: stream
+  writableStream?: stream.Writable
   onMeta?: (meta: MetaInfo) => void
 }
 
@@ -93,6 +93,8 @@ function printCsv(options: PrintCsvArgs) {
   })
   stringifier.on("error", console.error)
 
+  const decoder = new ToUtf8({encoding})
+
   if (onMeta) {
     formatter.on("end", () => {
       onMeta({
@@ -102,7 +104,7 @@ function printCsv(options: PrintCsvArgs) {
         totalLines: configGenerator.totalLines,
         skipLinesStart,
         skipLinesEnd,
-        encoding,
+        encoding: decoder.detectedEncoding ?? encoding,
         dateFormat,
         isoDatetime,
         columnTypes: formatter.columnTypes,
@@ -112,7 +114,7 @@ function printCsv(options: PrintCsvArgs) {
 
   fs
     .createReadStream(inputFilePath)
-    .pipe(toUtf8({encoding}))
+    .pipe(decoder)
     .pipe(parser)
     .pipe(formatter)
     .pipe(stringifier)
