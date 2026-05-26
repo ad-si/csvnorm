@@ -93,6 +93,5 @@ can be unambiguously parsed as integers (`1000000`).
 
 ### TODO
 
-- [ ] Print debugging info in TTY mode
 - [ ] Improve encoding detection
       (e.g. fork and update https://github.com/finnp/to-utf-8)

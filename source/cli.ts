@@ -5,16 +5,54 @@ import path from "path"
 import yargs from "yargs"
 import { hideBin } from "yargs/helpers"
 
-import csvnorm from "./index.js"
+import csvnorm, { MetaInfo } from "./index.js"
 
 const {stdin, stdout, argv} = process
 
-function logMetaInfos() {
-  console.info(
-    "=== Following meta infos won't be printed in non tty environments ===",
-    "\n",
-  )
-  console.info("The input was interpreted in following way:", "\n")
+function formatColumnStats(stats: {
+  date: number, number: number, currency: number, string: number,
+}): string {
+  const parts: string[] = []
+  if (stats.date) { parts.push(`date=${stats.date}`) }
+  if (stats.number) { parts.push(`number=${stats.number}`) }
+  if (stats.currency) { parts.push(`currency=${stats.currency}`) }
+  if (stats.string) { parts.push(`string=${stats.string}`) }
+  return parts.join(", ") || "(empty)"
+}
+
+const BOLD = "\x1b[1m"
+const RESET = "\x1b[0m"
+const RULE = "━".repeat(60)
+
+function printMeta(meta: MetaInfo) {
+  const log = console.error
+  log("")
+  log("")
+  log(`${BOLD}${RULE}${RESET}`)
+  log(`${BOLD}  Interpretation of Input${RESET}`)
+  log(`${BOLD}${RULE}${RESET}`)
+  log(`Source:           ${meta.filePath ?? "<stdin>"}`)
+  log(`Encoding:         ${meta.encoding ?? "auto-detected"}`)
+  log(`Delimiter:        ${JSON.stringify(meta.delimiter)}`)
+  log("Delimiter counts:")
+  for (const [delim, count] of Object.entries(meta.delimiterHistogram)) {
+    log(`  ${JSON.stringify(delim).padEnd(6)} ${count}`)
+  }
+  log(`Total lines:      ${meta.totalLines}`)
+  if (meta.skipLinesStart > 0 || meta.skipLinesEnd > 0) {
+    log(
+      `Skipped:          ${meta.skipLinesStart} from start, ` +
+      `${meta.skipLinesEnd} from end`,
+    )
+  }
+  if (meta.dateFormat) {
+    log(`Date format hint: ${meta.dateFormat}`)
+  }
+  log(`ISO datetime:     ${meta.isoDatetime}`)
+  log("Column type counts (across all data rows including header):")
+  meta.columnTypes.forEach((stats, idx) => {
+    log(`  Column ${idx}: ${formatColumnStats(stats)}`)
+  })
 }
 
 interface CommandLineOptions {
@@ -104,6 +142,8 @@ function main(args: string[]) {
   const options = (parser.argv) as unknown as CommandLineOptions
 
 
+  const onMeta = stdout.isTTY ? printMeta : undefined
+
   if (options._.length === 0) {
     if (options["in-place"]) {
       console.error("Error: --in-place has no effect with input from stdin")
@@ -113,8 +153,6 @@ function main(args: string[]) {
       return
     }
 
-    if (stdout.isTTY) { logMetaInfos() }
-
     csvnorm({
       dateFormat: options["date-format"],
       encoding: options.encoding,
@@ -123,12 +161,11 @@ function main(args: string[]) {
       skipLinesEnd: options["skip-end"],
       skipLinesStart: options["skip-start"],
       writableStream: stdout,
+      onMeta,
     })
   }
   else {
     const csvFilePath = options._[0]
-
-    if (stdout.isTTY) { logMetaInfos() }
 
     csvnorm({
       dateFormat: options["date-format"],
@@ -138,6 +175,7 @@ function main(args: string[]) {
       isoDatetime: options["iso-datetime"],
       skipLinesEnd: options["skip-end"],
       skipLinesStart: options["skip-start"],
+      onMeta,
     })
   }
 }

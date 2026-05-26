@@ -8,12 +8,25 @@ import { stringify } from "csv-stringify"
 import { temporaryFile } from "tempy"
 import toUtf8 from "to-utf-8"
 
-import Formatter from "./Formatter.js"
+import Formatter, { ColumnTypeStats } from "./Formatter.js"
 
 interface ConfigGeneratorInterface {
   delimiterHistogram: {[delimiter: string]: number}
   mostFrequentDelimter: string
   totalLines: number
+}
+
+export interface MetaInfo {
+  filePath?: string
+  delimiter: string
+  delimiterHistogram: {[delimiter: string]: number}
+  totalLines: number
+  skipLinesStart: number
+  skipLinesEnd: number
+  encoding?: string
+  dateFormat?: string
+  isoDatetime: boolean
+  columnTypes: ColumnTypeStats[]
 }
 
 interface PrintCsvArgs {
@@ -25,6 +38,8 @@ interface PrintCsvArgs {
   skipLinesEnd: number
   skipLinesStart: number
   writableStream?: stream
+  onMeta?: (meta: MetaInfo) => void
+  metaFilePath?: string
 }
 
 interface MainOptions {
@@ -37,6 +52,7 @@ interface MainOptions {
   skipLinesEnd?: number
   skipLinesStart?: number
   writableStream?: stream
+  onMeta?: (meta: MetaInfo) => void
 }
 
 function printCsv(options: PrintCsvArgs) {
@@ -49,6 +65,8 @@ function printCsv(options: PrintCsvArgs) {
     skipLinesEnd = 0,
     inputFilePath,
     writableStream,
+    onMeta,
+    metaFilePath,
   } = options
 
   const formatter = new Formatter({dateFormat, isoDatetime})
@@ -74,6 +92,23 @@ function printCsv(options: PrintCsvArgs) {
     },
   })
   stringifier.on("error", console.error)
+
+  if (onMeta) {
+    formatter.on("end", () => {
+      onMeta({
+        filePath: metaFilePath,
+        delimiter: configGenerator.mostFrequentDelimter,
+        delimiterHistogram: configGenerator.delimiterHistogram,
+        totalLines: configGenerator.totalLines,
+        skipLinesStart,
+        skipLinesEnd,
+        encoding,
+        dateFormat,
+        isoDatetime,
+        columnTypes: formatter.columnTypes,
+      })
+    })
+  }
 
   fs
     .createReadStream(inputFilePath)
@@ -148,6 +183,7 @@ export default (options: MainOptions) => {
     readableStream,
     skipLinesEnd = 0,
     skipLinesStart = 0,
+    onMeta,
   } = options
   let {writableStream} = options
 
@@ -178,6 +214,8 @@ export default (options: MainOptions) => {
         skipLinesEnd,
         skipLinesStart,
         writableStream,
+        onMeta,
+        metaFilePath: filePath,
       })
     })
     return
@@ -202,6 +240,7 @@ export default (options: MainOptions) => {
       skipLinesEnd,
       skipLinesStart,
       writableStream,
+      onMeta,
     })
   }
 
