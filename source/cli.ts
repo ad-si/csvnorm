@@ -28,7 +28,7 @@ interface CommandLineOptions {
 }
 
 function main(args: string[]) {
-  const options = (yargs(args)
+  const parser = yargs(args)
     .usage(
       [
         "Usage:",
@@ -102,7 +102,7 @@ function main(args: string[]) {
     )
     .version()
     .help()
-    .argv) as unknown as CommandLineOptions
+  const options = (parser.argv) as unknown as CommandLineOptions
 
 
   if (options._.length === 0) {
@@ -110,7 +110,7 @@ function main(args: string[]) {
       console.error("Error: --in-place has no effect with input from stdin")
     }
     if (stdin.isTTY) {
-      yargs.showHelp()
+      parser.showHelp()
       return
     }
 

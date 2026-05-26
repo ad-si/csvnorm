@@ -5,7 +5,7 @@ import stream from "stream"
 
 import { parse } from "csv-parse"
 import { stringify } from "csv-stringify"
-import tempy from "tempy"
+import { temporaryFile } from "tempy"
 import toUtf8 from "to-utf-8"
 
 import Formatter from "./Formatter.js"
@@ -141,7 +141,7 @@ export default (options: MainOptions) => {
       .pipe(configGenerator)
 
     if (inPlace) {
-      const tempFilePath = tempy.file({extension: "csv"})
+      const tempFilePath = temporaryFile({extension: "csv"})
       writableStream = fs.createWriteStream(tempFilePath)
       writableStream.on("finish", () => {
         fs.rename(tempFilePath, filePath, console.error)
@@ -163,7 +163,7 @@ export default (options: MainOptions) => {
     return
   }
 
-  const temporaryFilePath = tempy.file({extension: "csv"})
+  const temporaryFilePath = temporaryFile({extension: "csv"})
   const writableTempFile = fs.createWriteStream(temporaryFilePath)
   let firstStreamFinished = false
 
