@@ -22,6 +22,7 @@ interface CommandLineOptions {
   encoding?: string,
   "in-place"?: boolean,
   "iso-datetime"?: boolean,
+  "skip-end"?: number,
   "skip-start"?: number,
   _: string[],
   $0: string,
@@ -60,13 +61,11 @@ function main(args: string[]) {
         describe: "Skip lines at the start of the input",
         type: "number",
       },
-
-      // TODO:
-      // 'skip-end': {
-      //   default: 0,
-      //   describe: 'Skip lines at the end of the input',
-      //   type: 'number',
-      // },
+      "skip-end": {
+        default: 0,
+        describe: "Skip lines at the end of the input",
+        type: "number",
+      },
 
       // TODO:
       // 'keep-leading-zeros': {
@@ -121,7 +120,7 @@ function main(args: string[]) {
       encoding: options.encoding,
       isoDatetime: options["iso-datetime"],
       readableStream: stdin,
-      // skipLinesEnd: options['skip-end'],
+      skipLinesEnd: options["skip-end"],
       skipLinesStart: options["skip-start"],
       writableStream: stdout,
     })
@@ -137,7 +136,7 @@ function main(args: string[]) {
       filePath: path.resolve(csvFilePath),
       inPlace: options["in-place"],
       isoDatetime: options["iso-datetime"],
-      // skipLinesEnd: options['skip-end'],
+      skipLinesEnd: options["skip-end"],
       skipLinesStart: options["skip-start"],
     })
   }

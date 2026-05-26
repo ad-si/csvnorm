@@ -2,6 +2,7 @@
 
 ## 2026-05-26 - 1.2.0
 
+- Add `--skip-end` option to skip lines at the end of the input.
 - Convert package to ESM (`"type": "module"`).
 - Upgrade dependencies (TypeScript 6, ESLint 10, yargs 18, csv-parse 6,
   csv-stringify 6, execa 9, fs-extra 11, tempy 3, Node types 25).

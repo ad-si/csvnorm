@@ -13,6 +13,7 @@ import Formatter from "./Formatter.js"
 interface ConfigGeneratorInterface {
   delimiterHistogram: {[delimiter: string]: number}
   mostFrequentDelimter: string
+  totalLines: number
 }
 
 interface PrintCsvArgs {
@@ -21,7 +22,7 @@ interface PrintCsvArgs {
   encoding?: string
   inputFilePath: string
   isoDatetime: boolean
-  // skipLinesEnd: number
+  skipLinesEnd: number
   skipLinesStart: number
   writableStream?: stream
 }
@@ -33,7 +34,7 @@ interface MainOptions {
   inPlace?: boolean
   isoDatetime?: boolean
   readableStream?: stream
-  // skipLinesEnd?: number
+  skipLinesEnd?: number
   skipLinesStart?: number
   writableStream?: stream
 }
@@ -45,7 +46,7 @@ function printCsv(options: PrintCsvArgs) {
     encoding,
     isoDatetime,
     skipLinesStart = 0,
-    // skipLinesEnd = 0,
+    skipLinesEnd = 0,
     inputFilePath,
     writableStream,
   } = options
@@ -54,8 +55,12 @@ function printCsv(options: PrintCsvArgs) {
   const parser = parse({
     delimiter: configGenerator.mostFrequentDelimter,
     from_line: skipLinesStart + 1,
-    // TODO:
-    // to_line: numberOfLines - skipLinesEnd,
+    ...(skipLinesEnd > 0 && {
+      to_line: Math.max(
+        skipLinesStart + 1,
+        configGenerator.totalLines - skipLinesEnd,
+      ),
+    }),
   })
   parser.on("error", console.error)
 
@@ -84,6 +89,9 @@ class ConfigGenerator extends stream.Writable
 
   public delimiterHistogram: {[delimiter: string]: number}
   public mostFrequentDelimter: string
+  public totalLines: number
+  private lastCharWasNewline: boolean
+  private sawAnyChar: boolean
 
   constructor(opts: object) {
     super(opts)
@@ -94,10 +102,18 @@ class ConfigGenerator extends stream.Writable
       "|": 0,
     }
     this.mostFrequentDelimter = ","
+    this.totalLines = 0
+    this.lastCharWasNewline = false
+    this.sawAnyChar = false
   }
 
   public _write(chunk: Buffer, _1: string, chunkIsProcessedCb: () => void) {
     for (const char of chunk.toString()) {
+      this.sawAnyChar = true
+      this.lastCharWasNewline = char === "\n"
+      if (char === "\n") {
+        this.totalLines++
+      }
       if (Object.prototype.hasOwnProperty.call(this.delimiterHistogram, char)) {
         this.delimiterHistogram[char]++
       }
@@ -114,6 +130,10 @@ class ConfigGenerator extends stream.Writable
       )
     // [first entry of delimiter list][key of entry]
     this.mostFrequentDelimter = pairs[0][0]
+    // Count the final line if input doesn't end with a newline
+    if (this.sawAnyChar && !this.lastCharWasNewline) {
+      this.totalLines++
+    }
     done()
   }
 }
@@ -126,7 +146,7 @@ export default (options: MainOptions) => {
     inPlace,
     isoDatetime = false,
     readableStream,
-    // skipLinesEnd = 0,
+    skipLinesEnd = 0,
     skipLinesStart = 0,
   } = options
   let {writableStream} = options
@@ -155,7 +175,7 @@ export default (options: MainOptions) => {
         encoding,
         inputFilePath: filePath,
         isoDatetime,
-        // skipLinesEnd,
+        skipLinesEnd,
         skipLinesStart,
         writableStream,
       })
@@ -179,7 +199,7 @@ export default (options: MainOptions) => {
       encoding,
       inputFilePath: temporaryFilePath,
       isoDatetime,
-      // skipLinesEnd,
+      skipLinesEnd,
       skipLinesStart,
       writableStream,
     })

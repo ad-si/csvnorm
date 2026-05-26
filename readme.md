@@ -35,6 +35,7 @@ Options:
   --iso-datetime  Output datetimes with format YYYY-MM-DD[T]HH:mm:ss.SSS[Z]
                                                       [boolean] [default: false]
   --skip-start    Skip lines at the start of the input     [number] [default: 0]
+  --skip-end      Skip lines at the end of the input       [number] [default: 0]
   --version       Show version number                                  [boolean]
   --help          Show help                                            [boolean]
 
@@ -95,4 +96,3 @@ can be unambiguously parsed as integers (`1000000`).
 - [ ] Print debugging info in TTY mode
 - [ ] Improve encoding detection
       (e.g. fork and update https://github.com/finnp/to-utf-8)
-- [ ] Implement `skipLinesEnd`
