@@ -31,7 +31,6 @@ streamTester.on("finish", () => {
 process.stdout.write("Parse CSV file with calculations")
 
 csvnorm({
-  encoding: "utf-8",  // TODO: This should not be necessary
   readableStream: fs.createReadStream(
     path.join(testsDir, "banking/calculations.csv"),
   ),
